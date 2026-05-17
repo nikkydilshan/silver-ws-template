@@ -1,6 +1,6 @@
 const Wishlist = {
   get() {
-    const saved = localStorage.getItem('pooja_silver_wishlist');
+    const saved = localStorage.getItem('navadurga_silver_wishlist');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -12,7 +12,7 @@ const Wishlist = {
   },
 
   set(items) {
-    localStorage.setItem('pooja_silver_wishlist', JSON.stringify(items));
+    localStorage.setItem('navadurga_silver_wishlist', JSON.stringify(items));
     this.updateBadges();
   },
 
