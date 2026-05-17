@@ -11,13 +11,13 @@
   --border-color: #ebdcc6;
   --danger: #d9534f;
   --success: #2ec4b6;
-  --shadow-sm: 0 4px 12px rgba(24, 23, 21, 0.03);
-  --shadow-md: 0 8px 24px rgba(24, 23, 21, 0.05);
-  --shadow-lg: 0 16px 40px rgba(24, 23, 21, 0.08);
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 16px;
-  --transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --shadow-sm: 0 6px 18px rgba(24, 23, 21, 0.04);
+  --shadow-md: 0 12px 32px rgba(24, 23, 21, 0.06);
+  --shadow-lg: 0 20px 48px rgba(24, 23, 21, 0.10);
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 28px;
+  --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 * {
@@ -214,7 +214,7 @@ button {
   justify-content: center;
   padding: 0.85rem 2rem;
   font-weight: 500;
-  border-radius: var(--radius-sm);
+  border-radius: 30px;
   transition: var(--transition);
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -393,7 +393,7 @@ button {
 
 .product-card {
   background: var(--surface-color);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   overflow: hidden;
   transition: var(--transition);
   border: 1px solid var(--border-color);
@@ -479,7 +479,7 @@ button {
   background: var(--text-dark);
   color: white;
   padding: 0.2rem 0.5rem;
-  border-radius: 2px;
+  border-radius: 12px;
   font-size: 0.7rem;
   font-weight: 500;
 }
