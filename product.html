@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="View detailed specifications, purity, and heritage artistry of our sterling silver items. Enquire instantly.">
+  <title>Product Details | Pooja Silver</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .product-detail-page {
+      padding: 3rem 0;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-light);
+      margin-bottom: 2rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+    .back-link:hover {
+      color: var(--primary);
+    }
+    .product-detail-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 4rem;
+    }
+    .product-detail-image {
+      background-color: #f7f6f4;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      position: sticky;
+      top: 120px;
+    }
+    .product-detail-image img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .product-detail-image:hover img {
+      transform: scale(1.03);
+    }
+    .product-meta-detail {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .category-tag {
+      color: var(--text-light);
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 1.5px;
+      font-weight: 500;
+    }
+    .product-detail-info h1 {
+      font-size: 2.6rem;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+      font-family: 'Playfair Display', serif;
+    }
+    .product-price-large {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+    .product-description {
+      font-size: 1.05rem;
+      color: var(--text-light);
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+    }
+    .product-actions {
+      display: flex;
+      gap: 1.25rem;
+      margin-bottom: 3.5rem;
+      flex-wrap: wrap;
+    }
+    .wishlist-large-btn {
+      flex: 1;
+      min-width: 220px;
+      padding: 1.1rem 2rem;
+      font-size: 0.9rem;
+    }
+    .enquiry-large-btn {
+      flex: 1;
+      min-width: 220px;
+      padding: 1.1rem 2rem;
+      font-size: 0.9rem;
+      background-color: #25D366;
+      color: white;
+      border-color: #25D366;
+    }
+    .enquiry-large-btn:hover {
+      background-color: #20ba59;
+      border-color: #20ba59;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .product-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 3.5rem;
+      padding: 2rem 0;
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .feature svg {
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .feature strong {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+    .feature p {
+      color: var(--text-light);
+      font-size: 0.85rem;
+    }
+    .product-specifications h3 {
+      font-size: 1.4rem;
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.5px;
+    }
+    .product-specifications ul {
+      list-style-type: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .product-specifications li {
+      position: relative;
+      padding-left: 1.5rem;
+      color: var(--text-light);
+      font-size: 0.95rem;
+    }
+    .product-specifications li::before {
+      content: '✦';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-size: 0.8rem;
+    }
+    .related-section {
+      margin-top: 6rem;
+      border-top: 1px solid var(--border-color);
+      padding-top: 6rem;
+    }
+    @media (max-width: 992px) {
+      .product-detail-grid {
+        gap: 2.5rem;
+      }
+      .product-detail-info h1 {
+        font-size: 2.2rem;
+      }
+    }
+    @media (max-width: 768px) {
+      .product-detail-grid {
+        grid-template-columns: 1fr;
+      }
+      .product-detail-image {
+        position: relative;
+        top: 0;
+      }
+      .product-actions {
+        flex-direction: column;
+      }
+      .wishlist-large-btn, .enquiry-large-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="logo">Pooja <span>Silver</span></a>
+      
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop All</a>
+        <a href="about.html">Our Legacy</a>
+        <a href="contact.html">Contact Us</a>
+      </div>
+
+      <div class="nav-actions">
+        <a href="wishlist.html" class="nav-icon" title="View Wishlist">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span class="wishlist-badge" style="display:none">0</span>
+        </a>
+        <button class="nav-icon menu-toggle" aria-label="Toggle Navigation Menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Details Page -->
+  <main class="container product-detail-page">
+    <a href="shop.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Back to Collections
+    </a>
+
+    <!-- Detail Grid -->
+    <div class="product-detail-grid" id="product-details-container">
+      <!-- Generated Dynamically -->
+    </div>
+
+    <!-- Related Products -->
+    <section class="related-section">
+      <div class="title-center">
+        <h2>You May Also Adore</h2>
+        <p>Similar certified hallmarked pieces tailored to complement your choice</p>
+      </div>
+      <div class="grid-4" id="related-products-grid">
+        <!-- Generated Dynamically -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h2>Pooja <span>Silver</span></h2>
+          <p class="brand-desc">
+            Bringing custom divine energy and unmatched silver elegance to your homes and celebrations since 1995.
+          </p>
+          <div class="social-links">
+            <a href="#" aria-label="Follow us on Instagram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            </a>
+            <a href="#" aria-label="Follow us on Facebook">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+            </a>
+            <a href="#" aria-label="WhatsApp Support">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="shop.html">Shop Collections</a></li>
+            <li><a href="about.html">Our Legacy</a></li>
+            <li><a href="contact.html">Bespoke Orders</a></li>
+            <li><a href="wishlist.html">My Wishlist</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h3>Support</h3>
+          <ul>
+            <li><a href="faq.html">FAQs</a></li>
+            <li><a href="terms.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="terms.html">Shipping Details</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-contact">
+          <h3>Contact Altars</h3>
+          <ul>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <span>123 Silver Street, Heritage District, Mumbai, 400001</span>
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              <span>+91 98765 43210</span>
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              <span>enquiry@poojasilver.com</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Pooja Silver. All rights reserved. Crafting trust with hallmarked silver jewelry & articles.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/products.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const detailsContainer = document.getElementById('product-details-container');
+      const relatedGrid = document.getElementById('related-products-grid');
+
+      // Grab ID from URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = parseInt(urlParams.get('id'));
+
+      if (isNaN(productId)) {
+        window.location.href = 'shop.html';
+        return;
+      }
+
+      const product = products.find(p => p.id === productId);
+
+      if (!product) {
+        detailsContainer.innerHTML = `
+          <div style="grid-column: span 2; text-align: center; padding: 4rem 0;">
+            <h2 class="playfair">Product Not Found</h2>
+            <p style="margin-bottom: 2rem;">The item you are searching for does not exist or has been moved.</p>
+            <a href="shop.html" class="btn btn-primary">Return to Shop</a>
+          </div>
+        `;
+        return;
+      }
+
+      // Render details
+      const isSaved = Wishlist.has(product.id);
+      const isOutOfStock = product.availability === "Out of Stock";
+
+      detailsContainer.innerHTML = `
+        <div class="product-detail-image">
+          <img src="${product.image}" alt="${product.name}">
+        </div>
+
+        <div class="product-detail-info">
+          <div class="product-meta-detail">
+            <span class="category-tag">${product.category} &gt; ${product.subcategory}</span>
+            ${isOutOfStock ? '<span class="badge-text out-of-stock">Out of Stock</span>' : ''}
+          </div>
+
+          <h1>${product.name}</h1>
+          <div class="product-price-large">₹${product.price.toLocaleString('en-IN')}</div>
+
+          <p class="product-description">${product.description}</p>
+
+          <div class="product-actions">
+            <button 
+              class="btn ${isSaved ? 'btn-primary' : 'btn-outline'} wishlist-large-btn"
+              onclick="toggleDetailWishlist(${product.id}, this)"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+              <span class="btn-label-text">${isSaved ? 'Saved in Wishlist' : 'Add to Wishlist'}</span>
+            </button>
+            
+            <a href="https://wa.me/919876543210?text=Hello!%20I%20am%20interested%20in%20learning%20more%20about%20your%20product%20-%20${encodeURIComponent(product.name)}%20(ID:%20${product.id})." target="_blank" class="btn btn-outline enquiry-large-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+              </svg>
+              Enquire on WhatsApp
+            </a>
+          </div>
+
+          <div class="product-features">
+            <div class="feature">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <div>
+                <strong>${product.material}</strong>
+                <p>100% genuine guaranteed</p>
+              </div>
+            </div>
+            <div class="feature">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+              </svg>
+              <div>
+                <strong>Secured Crating</strong>
+                <p>Fully insured transit delivery</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-specifications">
+            <h3 class="playfair">Artistic Specifications</h3>
+            <ul>
+              ${product.specifications.map(spec => `<li>${spec}</li>`).join('')}
+            </ul>
+          </div>
+        </div>
+      `;
+
+      // Render Related Products (same category, excluding current product)
+      const related = products
+        .filter(p => p.category === product.category && p.id !== product.id)
+        .slice(0, 4);
+
+      if (related.length > 0) {
+        relatedGrid.innerHTML = related.map(createProductCardHTML).join('');
+      } else {
+        relatedGrid.innerHTML = `<p style="grid-column: span 4; text-align: center; color: var(--text-light);">No other related products found.</p>`;
+      }
+    });
+
+    // Special Wishlist toggle for Product Details page
+    function toggleDetailWishlist(productId, button) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+
+      const isAdded = Wishlist.toggle(product);
+      const svg = button.querySelector('svg');
+      const label = button.querySelector('.btn-label-text');
+
+      if (isAdded) {
+        button.className = "btn btn-primary wishlist-large-btn";
+        svg.setAttribute('fill', 'currentColor');
+        label.textContent = "Saved in Wishlist";
+      } else {
+        button.className = "btn btn-outline wishlist-large-btn";
+        svg.setAttribute('fill', 'none');
+        label.textContent = "Add to Wishlist";
+      }
+    }
+  </script>
+</body>
+</html>

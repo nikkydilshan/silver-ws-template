@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Reach out to Pooja Silver for bespoke silver statues, traditional diyas, or classic bridal jewelry enquiries.">
+  <title>Contact Our Shrines | Pooja Silver Enquiries</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 5rem;
+      margin-top: 3rem;
+    }
+    .contact-info-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+    .contact-card-box {
+      background-color: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .contact-card-box h3 {
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      padding-bottom: 0.5rem;
+    }
+    .contact-card-box h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background-color: var(--primary);
+    }
+    .contact-details-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .contact-details-list li {
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+    }
+    .contact-details-list .icon-wrap {
+      color: var(--primary);
+      background-color: var(--primary-light);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .contact-details-list h4 {
+      font-size: 1rem;
+      margin-bottom: 0.2rem;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+    }
+    .contact-details-list p, .contact-details-list a {
+      color: var(--text-light);
+      font-size: 0.95rem;
+    }
+    .contact-details-list a:hover {
+      color: var(--primary);
+    }
+    .form-panel {
+      background-color: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 3.5rem;
+      box-shadow: var(--shadow-md);
+    }
+    .form-panel h3 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      font-family: 'Playfair Display', serif;
+    }
+    .form-panel p {
+      color: var(--text-light);
+      margin-bottom: 2.5rem;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .form-success-alert {
+      display: none;
+      background-color: var(--primary-light);
+      border: 1px solid var(--primary);
+      color: var(--text-dark);
+      padding: 1.5rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .form-success-alert h4 {
+      font-size: 1.2rem;
+      margin-bottom: 0.25rem;
+    }
+    .form-success-alert p {
+      font-size: 0.95rem;
+      color: var(--text-light);
+      margin: 0;
+    }
+    @media (max-width: 992px) {
+      .contact-layout {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      .form-panel {
+        padding: 2.5rem;
+      }
+    }
+    @media (max-width: 576px) {
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="logo">Pooja <span>Silver</span></a>
+      
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop All</a>
+        <a href="about.html">Our Legacy</a>
+        <a href="contact.html" class="active">Contact Us</a>
+      </div>
+
+      <div class="nav-actions">
+        <a href="wishlist.html" class="nav-icon" title="View Wishlist">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span class="wishlist-badge" style="display:none">0</span>
+        </a>
+        <button class="nav-icon menu-toggle" aria-label="Toggle Navigation Menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container section">
+    <div class="title-center">
+      <h2>Connect With Us</h2>
+      <p>Initiate a direct enquiry, schedule a physical showroom viewing, or request custom-weight designs</p>
+    </div>
+
+    <!-- Contact Grid Layout -->
+    <div class="contact-layout">
+      
+      <!-- Info Left Panel -->
+      <div class="contact-info-panel">
+        <div class="contact-card-box">
+          <h3>Bespoke Shrines</h3>
+          <ul class="contact-details-list">
+            <li>
+              <div class="icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              </div>
+              <div>
+                <h4>Direct Voice Support</h4>
+                <p><a href="tel:+919876543210">+91 98765 43210</a></p>
+              </div>
+            </li>
+            <li>
+              <div class="icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+              </div>
+              <div>
+                <h4>WhatsApp Assistant</h4>
+                <p><a href="https://wa.me/919876543210" target="_blank">Enquire on WhatsApp</a></p>
+              </div>
+            </li>
+            <li>
+              <div class="icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              </div>
+              <div>
+                <h4>Email Desk</h4>
+                <p><a href="mailto:enquiry@poojasilver.com">enquiry@poojasilver.com</a></p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="contact-card-box">
+          <h3>Showroom Altars</h3>
+          <ul class="contact-details-list">
+            <li>
+              <div class="icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              </div>
+              <div>
+                <h4>Flagship Gallery</h4>
+                <p>123 Silver Street, Heritage District, Mumbai, 400001</p>
+              </div>
+            </li>
+            <li>
+              <div class="icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </div>
+              <div>
+                <h4>Showroom Hours</h4>
+                <p>Monday - Saturday: 10:00 AM - 8:30 PM<br>Sunday: Closed</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right Form Panel -->
+      <div class="form-panel">
+        <div class="form-success-alert" id="success-alert">
+          <h4 class="playfair">Aura Received</h4>
+          <p>Thank you for submitting your enquiry. An expert silver craft consultant will reach out to you within 24 hours.</p>
+        </div>
+
+        <form id="enquiry-form">
+          <h3 class="playfair">Custom Product Enquiry</h3>
+          <p>Fill out this form to ask about custom-made weights, specific traditional engravings, or bulk pooja gift sets.</p>
+
+          <div class="form-row">
+            <div class="input-group">
+              <label for="contact-name">Your Full Name *</label>
+              <input type="text" id="contact-name" class="input-control" required placeholder="e.g. Rahul Sharma">
+            </div>
+            <div class="input-group">
+              <label for="contact-email">Email Address *</label>
+              <input type="email" id="contact-email" class="input-control" required placeholder="e.g. rahul@example.com">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="input-group">
+              <label for="contact-phone">Phone Number *</label>
+              <input type="tel" id="contact-phone" class="input-control" required placeholder="e.g. +91 98765 43210">
+            </div>
+            <div class="input-group">
+              <label for="enquiry-type">Interested Collection</label>
+              <select id="enquiry-type" class="input-control select-control">
+                <option value="General">General Questions</option>
+                <option value="Pooja Idols">Heritage Pooja Idols</option>
+                <option value="Silver Diyas">Priscilla Silver Diyas</option>
+                <option value="Art Thalis">Royal Thali Sets</option>
+                <option value="Fine Jewelry">Traditional Silver Jewelry</option>
+                <option value="Bespoke">Bespoke Custom Forging</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="contact-msg">Enquiry Description *</label>
+            <textarea id="contact-msg" class="input-control" required rows="6" placeholder="Describe the size, customized engraving, or weight preferences you desire for your items..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Custom Request</button>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h2>Pooja <span>Silver</span></h2>
+          <p class="brand-desc">
+            Bringing custom divine energy and unmatched silver elegance to your homes and celebrations since 1995.
+          </p>
+          <div class="social-links">
+            <a href="#" aria-label="Follow us on Instagram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            </a>
+            <a href="#" aria-label="Follow us on Facebook">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+            </a>
+            <a href="#" aria-label="WhatsApp Support">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="shop.html">Shop Collections</a></li>
+            <li><a href="about.html">Our Legacy</a></li>
+            <li><a href="contact.html">Bespoke Orders</a></li>
+            <li><a href="wishlist.html">My Wishlist</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h3>Support</h3>
+          <ul>
+            <li><a href="faq.html">FAQs</a></li>
+            <li><a href="terms.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+            <li><a href="terms.html">Shipping Details</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-contact">
+          <h3>Contact Altars</h3>
+          <ul>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <span>123 Silver Street, Heritage District, Mumbai, 400001</span>
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              <span>+91 98765 43210</span>
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              <span>enquiry@poojasilver.com</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Pooja Silver. All rights reserved. Crafting trust with hallmarked silver jewelry & articles.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/wishlist.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('enquiry-form');
+      const alertPanel = document.getElementById('success-alert');
+
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          
+          // Clear inputs
+          form.reset();
+
+          // Visual Confirmation Display
+          alertPanel.style.display = 'block';
+          window.scrollTo({ top: alertPanel.offsetTop - 120, behavior: 'smooth' });
+
+          // Auto-hide alert after 8 seconds
+          setTimeout(() => {
+            alertPanel.style.display = 'none';
+          }, 8000);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
