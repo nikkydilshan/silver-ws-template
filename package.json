@@ -1,7 +1,7 @@
 {
   "name": "silver-ws-template-1",
   "version": "1.0.0",
-  "description": "Premium multi-page business website for Navadurga Silver, selling silver jewelry and pooja items.",
+  "description": "Premium multi-page business website for Navdurga Jewellers, selling exquisite jewelry and devotional items.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
