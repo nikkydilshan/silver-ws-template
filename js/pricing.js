@@ -178,12 +178,13 @@ const PricingEngine = (() => {
         
         const troyOunceInGrams = 31.1034768;
         
-        // As of today, Hyderabad retail gold price is ~₹15,622 and global spot is ~₹6,276.
-        // We apply a multiplier of 2.49 to accurately reflect local customs, taxes, duties, and local premiums.
-        const HYDERABAD_PREMIUM_MULTIPLIER = 2.49; 
+        // As of today, Hyderabad retail gold price is ~₹15,622 and global spot is ~₹13,793.
+        // We apply a premium multiplier of 1.1326 for gold and 1.2609 for silver to accurately reflect customs duty, GST, and local premiums.
+        const GOLD_MULTIPLIER = 1.1326;
+        const SILVER_MULTIPLIER = 1.2609;
         
-        const gold24kGram = (goldData.xau.inr / troyOunceInGrams) * HYDERABAD_PREMIUM_MULTIPLIER;
-        const silver999Gram = (silverData.xag.inr / troyOunceInGrams) * HYDERABAD_PREMIUM_MULTIPLIER;
+        const gold24kGram = (goldData.xau.inr / troyOunceInGrams) * GOLD_MULTIPLIER;
+        const silver999Gram = (silverData.xag.inr / troyOunceInGrams) * SILVER_MULTIPLIER;
         
         const rates = getRates();
         rates.gold_24k = Math.round(gold24kGram);
