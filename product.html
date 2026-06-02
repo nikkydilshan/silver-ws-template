@@ -8,7 +8,8 @@
   <link rel="stylesheet" href="css/style.css">
   <style>
     .product-detail-page {
-      padding: 3rem 0;
+      padding-top: 3rem;
+      padding-bottom: 3rem;
     }
     .back-link {
       display: inline-flex;
@@ -202,7 +203,7 @@
             </linearGradient>
           </defs>
           <!-- Elegant Serif N -->
-          <text x="1" y="27" font-family="'Playfair Display', 'Georgia', serif" font-size="21" font-weight="900" fill="url(#logoGold)">N</text>
+          <text x="1" y="27" font-family="\'Playfair Display\', \'Georgia\', serif" font-size="21" font-weight="900" fill="url(#logoGold)">N</text>
           <!-- Elegant Serif J -->
           <text x="16.5" y="32" font-family="'Playfair Display', 'Georgia', serif" font-size="21" font-weight="900" fill="url(#logoGold)">J</text>
           <!-- Faceted Diamond sitting on J's stem -->
@@ -219,72 +220,28 @@
       </a>
       
       <div class="nav-links">
-        <a href="index.html">Home</a>
-        <div class="nav-item">
-          <a href="shop.html" class="nav-link-dropdown-toggle">Shop All <span class="chevron">▼</span></a>
-          <div class="nav-dropdown">
-            <div class="dropdown-inner">
-              <div class="dropdown-grid">
-                
-                <div class="dropdown-column">
-                  <h4 class="dropdown-title">Divine Pooja Articles</h4>
-                  <a class="dropdown-link" href="shop.html?category=Pooja Items">
-                    <span class="dropdown-link__icon">✨</span>
-                    <div class="dropdown-link__text">
-                      <div class="dropdown-link__name">Pure Silver Idols</div>
-                      <div class="dropdown-link__sub">Meticulously carved Ganesha, Lakshmi & divine idols</div>
-                    </div>
-                  </a>
-                  <a class="dropdown-link" href="shop.html?category=Pooja Items">
-                    <span class="dropdown-link__icon">🪔</span>
-                    <div class="dropdown-link__text">
-                      <div class="dropdown-link__name">Sacred Diya Sets</div>
-                      <div class="dropdown-link__sub">Traditional twin diyas and lamps to light prayers</div>
-                    </div>
-                  </a>
-                  <a class="dropdown-link" href="shop.html?category=Pooja Items">
-                    <span class="dropdown-link__icon">🍽️</span>
-                    <div class="dropdown-link__text">
-                      <div class="dropdown-link__name">Aarti Thalis & Kalash</div>
-                      <div class="dropdown-link__sub">Carved silver plates, akshat bowls and holy water sets</div>
-                    </div>
-                  </a>
-                </div>
-
-                <div class="dropdown-column">
-                  <h4 class="dropdown-title">Heritage Silver Jewelry</h4>
-                  <a class="dropdown-link" href="shop.html?category=Silver Jewelry">
-                    <span class="dropdown-link__icon">📿</span>
-                    <div class="dropdown-link__text">
-                      <div class="dropdown-link__name">Oxidized Necklaces</div>
-                      <div class="dropdown-link__sub">Antique finished royal tribal neckpieces</div>
-                    </div>
-                  </a>
-                  <a class="dropdown-link" href="shop.html?category=Silver Jewelry">
-                    <span class="dropdown-link__icon">💎</span>
-                    <div class="dropdown-link__text">
-                      <div class="dropdown-link__name">Kundan Jhumkas</div>
-                      <div class="dropdown-link__sub">Traditional earrings embedded with pearls & kundan</div>
-                    </div>
-                  </a>
-                  <a class="dropdown-link" href="shop.html?category=Silver Jewelry">
-                    <span class="dropdown-link__icon">💫</span>
-                    <div class="dropdown-link__text">
-                      <div class="dropdown-link__name">Anklets & Bangles</div>
-                      <div class="dropdown-link__sub">Handcrafted filigree bangles and micro-bead anklets</div>
-                    </div>
-                  </a>
-                </div>
-
-              </div>
-              <div class="dropdown-footer">
-                <a href="shop.html" class="view-all-link">Explore Entire Collection &rarr;</a>
-              </div>
-            </div>
+        <a href="index.html" >Home</a>
+        <div class="nav-dropdown">
+          <button class="dropdown-btn">Gold <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+          <div class="dropdown-content">
+            <a href="shop.html?category=Gold">All Gold</a>
+            <a href="shop.html?category=Gold&subcategory=Necklaces">Necklaces</a>
+            <a href="shop.html?category=Gold&subcategory=Bangles">Bangles</a>
+            <a href="shop.html?category=Gold&subcategory=Earrings">Earrings</a>
           </div>
         </div>
-        <a href="about.html">Our Legacy</a>
-        <a href="contact.html">Contact Us</a>
+        <div class="nav-dropdown">
+          <button class="dropdown-btn">Silver <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+          <div class="dropdown-content">
+            <a href="shop.html?category=Silver">All Silver</a>
+            <a href="shop.html?category=Silver&subcategory=Pooja%20Idols">Pooja Idols</a>
+            <a href="shop.html?category=Silver&subcategory=Pooja%20Diyas">Pooja Diyas</a>
+            <a href="shop.html?category=Silver&subcategory=Necklaces">Silver Jewelry</a>
+          </div>
+        </div>
+        <a href="shop.html" >Shop All</a>
+        <a href="about.html" >Our Legacy</a>
+        <a href="contact.html" >Contact Us</a>
       </div>
 
       <div class="nav-actions">
@@ -304,6 +261,9 @@
       </div>
     </div>
   </nav>
+
+  <!-- Rates Ticker -->
+  <div id="rates-ticker" class="rates-ticker"></div>
 
   <!-- Main Details Page -->
   <main class="container product-detail-page">
@@ -347,7 +307,7 @@
                 </linearGradient>
               </defs>
               <!-- Elegant Serif N -->
-              <text x="1" y="27" font-family="'Playfair Display', 'Georgia', serif" font-size="21" font-weight="900" fill="url(#logoGoldFooter)">N</text>
+              <text x="1" y="27" font-family="\'Playfair Display\', \'Georgia\', serif" font-size="21" font-weight="900" fill="url(#logoGold)">N</text>
               <!-- Elegant Serif J -->
               <text x="16.5" y="32" font-family="'Playfair Display', 'Georgia', serif" font-size="21" font-weight="900" fill="url(#logoGoldFooter)">J</text>
               <!-- Faceted Diamond sitting on J's stem -->
@@ -424,6 +384,7 @@
   </footer>
 
   <!-- Scripts -->
+  <script src="js/pricing.js"></script>
   <script src="js/products.js"></script>
   <script src="js/wishlist.js"></script>
   <script src="js/main.js"></script>
@@ -457,6 +418,7 @@
       // Render details
       const isSaved = Wishlist.has(product.id);
       const isOutOfStock = product.availability === "Out of Stock";
+      const pricing = getProductPrice(product);
 
       detailsContainer.innerHTML = `
         <div class="product-detail-image">
@@ -470,7 +432,30 @@
           </div>
 
           <h1>${product.name}</h1>
-          <div class="product-price-large">₹${product.price.toLocaleString('en-IN')}</div>
+          <div class="product-weight-info" style="margin-bottom:1.5rem;">
+            <span class="weight-tag">${product.weightGrams}g</span>
+            <span class="wastage-tag">Wastage: ${product.wastagePercent}%</span>
+          </div>
+          
+          <div style="margin-bottom: 2rem; background-color: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.95rem; color: var(--text-light);">
+              <span>Base Metal Cost (${product.weightGrams}g @ ₹${pricing.ratePerGram}/g):</span>
+              <span>₹${pricing.metalCost.toLocaleString('en-IN')}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.95rem; color: var(--text-light);">
+              <span>Wastage (${product.wastagePercent}%):</span>
+              <span>₹${pricing.wastageCost.toLocaleString('en-IN')}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px dashed var(--border-color); padding-bottom: 1rem; font-size: 0.95rem; color: var(--text-light);">
+              <span>Making Charges:</span>
+              <span>₹${pricing.makingCharges.toLocaleString('en-IN')}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 600; color: var(--text-dark);">Estimated Final Price:</span>
+              <span class="product-price-large" style="margin-bottom: 0; padding-bottom: 0; border: none;">₹${pricing.totalPrice.toLocaleString('en-IN')}</span>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-light); text-align: right; margin-top: 0.5rem;">*Subject to daily live rates</div>
+          </div>
 
           <p class="product-description">${product.description}</p>
 
