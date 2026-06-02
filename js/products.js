@@ -325,57 +325,160 @@ function getProductPrice(product) {
 // ─── Product Database Manager ───
 const ProductManager = (() => {
   const STORAGE_KEY = 'mahadev_products_db';
+  const API_URL = 'api/products.php';
+  
+  let cachedProducts = null;
+  let isOnline = false;
 
-  function _load() {
+  // Detect if server has PHP API running
+  function _init() {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        return JSON.parse(stored);
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', API_URL, false); // synchronous
+      xhr.send(null);
+      if (xhr.status === 200) {
+        cachedProducts = JSON.parse(xhr.responseText);
+        isOnline = true;
       }
-    } catch (e) { /* ignore */ }
-    // First run — seed with INITIAL_PRODUCTS
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_PRODUCTS));
-    return INITIAL_PRODUCTS;
+    } catch (e) {
+      // Failed to reach PHP API (e.g. running on local python server)
+    }
+
+    if (!cachedProducts) {
+      // Fallback to localStorage
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          cachedProducts = JSON.parse(stored);
+        }
+      } catch (e) { /* ignore */ }
+
+      if (!cachedProducts) {
+        cachedProducts = INITIAL_PRODUCTS;
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_PRODUCTS));
+        } catch (e) { /* ignore */ }
+      }
+    }
   }
 
-  function _save(list) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-  }
+  // Initialize immediately
+  _init();
 
   function getAll() {
-    return _load();
+    return cachedProducts;
   }
 
-  function add(product) {
-    const list = _load();
-    // Generate incremental ID
-    const maxId = list.reduce((max, p) => p.id > max ? p.id : max, 0);
+  // Helper to send secure write operations to PHP
+  function _apiWrite(action, data, authHeaders = null) {
+    if (!isOnline) return false;
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', API_URL, false); // synchronous
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      
+      let userHash = "";
+      let passHash = "";
+
+      if (authHeaders) {
+        userHash = authHeaders.usernameHash;
+        passHash = authHeaders.passwordHash;
+      } else {
+        // Fallback to session credentials if stored
+        userHash = sessionStorage.getItem('mahadev_admin_user') || '';
+        passHash = sessionStorage.getItem('mahadev_admin_pass') || '';
+      }
+
+      xhr.setRequestHeader('X-Admin-User', userHash);
+      xhr.setRequestHeader('X-Admin-Pass', passHash);
+
+      const payload = { action: action, ...data };
+      xhr.send(JSON.stringify(payload));
+      
+      if (xhr.status === 200) {
+        const resp = JSON.parse(xhr.responseText);
+        if (resp.success) {
+          cachedProducts = resp.products;
+          return true;
+        }
+      } else {
+        try {
+          const resp = JSON.parse(xhr.responseText);
+          if (resp && resp.error) {
+            alert("Authorization Error: " + resp.error);
+          }
+        } catch(e) {
+          alert("Request failed with status: " + xhr.status);
+        }
+      }
+    } catch (e) {
+      console.error("API Write failed", e);
+    }
+    return false;
+  }
+
+  function add(product, authHeaders = null) {
+    if (isOnline) {
+      const success = _apiWrite('add', { product: product }, authHeaders);
+      if (success) return product;
+      return null;
+    }
+    
+    // Offline local fallback
+    const maxId = cachedProducts.reduce((max, p) => p.id > max ? p.id : max, 0);
     product.id = maxId + 1;
-    list.push(product);
-    _save(list);
+    cachedProducts.push(product);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cachedProducts));
     return product;
   }
 
-  function updateStatus(id, availability) {
-    const list = _load();
-    const product = list.find(p => p.id === id);
+  function updateStatus(id, availability, authHeaders = null) {
+    if (isOnline) {
+      return _apiWrite('updateStatus', { id: id, availability: availability }, authHeaders);
+    }
+    
+    // Offline local fallback
+    const product = cachedProducts.find(p => p.id === id);
     if (product) {
       product.availability = availability;
-      _save(list);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cachedProducts));
       return true;
     }
     return false;
   }
 
-  function deleteProduct(id) {
-    let list = _load();
-    list = list.filter(p => p.id !== id);
-    _save(list);
+  function deleteProduct(id, authHeaders = null) {
+    if (isOnline) {
+      return _apiWrite('delete', { id: id }, authHeaders);
+    }
+    
+    // Offline local fallback
+    cachedProducts = cachedProducts.filter(p => p.id !== id);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cachedProducts));
+    return true;
   }
 
-  function reset() {
+  function reset(authHeaders = null) {
+    if (isOnline) {
+      return _apiWrite('reset', {}, authHeaders);
+    }
+    
+    // Offline local fallback
     localStorage.removeItem(STORAGE_KEY);
-    return _load();
+    cachedProducts = INITIAL_PRODUCTS;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cachedProducts));
+    return true;
+  }
+
+  function importDB(productsList, authHeaders = null) {
+    if (isOnline) {
+      return _apiWrite('import', { products: productsList }, authHeaders);
+    }
+    
+    // Offline local fallback
+    cachedProducts = productsList;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cachedProducts));
+    return true;
   }
 
   return {
@@ -384,6 +487,8 @@ const ProductManager = (() => {
     updateStatus,
     deleteProduct,
     reset,
+    importDB,
+    isOnline: () => isOnline
   };
 })();
 
