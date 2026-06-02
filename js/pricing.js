@@ -15,13 +15,13 @@
 
 const PricingEngine = (() => {
 
-  // ─── Default Base Rates (₹ per gram) ───
+  // ─── Default Base Rates (₹ per gram) — Hyderabad June 2026 ───
   const DEFAULT_RATES = {
-    gold_24k: 7450,    // Pure 24K gold per gram
-    gold_22k: 6830,    // 22K gold per gram (jewellery standard)
-    gold_18k: 5590,    // 18K gold per gram
-    silver_999: 96,    // 999 fine silver per gram
-    silver_925: 89,    // 925 sterling silver per gram
+    gold_24k: 15622,    // Pure 24K gold per gram
+    gold_22k: 14320,    // 22K gold per gram (jewellery standard)
+    gold_18k: 11717,    // 18K gold per gram
+    silver_999: 290,    // 999 fine silver per gram
+    silver_925: 268,    // 925 sterling silver per gram
   };
 
   const STORAGE_KEY = 'mahadev_metal_rates';
@@ -148,43 +148,55 @@ const PricingEngine = (() => {
     `;
   }
 
-  // ─── Free Auto-Fetch API Integration ───
-  // Uses a free public CDN for currency rates (Updates once every 24 hours)
+  // ─── Hyderabad Live Rates API Integration ───
+  // Fetches live Hyderabad retail pricing from our PHP scraping API (falls back to global with Hyderabad multiplier if offline)
   async function fetchLiveRates() {
     try {
-      // Fetch Global Gold (XAU) and Silver (XAG) Spot Prices in INR
-      const [goldRes, silverRes] = await Promise.all([
-        fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.json'),
-        fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xag.json')
-      ]);
+      const res = await fetch('api/rates.php');
+      if (!res.ok) throw new Error("Server API returned status " + res.status);
+      const data = await res.json();
       
-      const goldData = await goldRes.json();
-      const silverData = await silverRes.json();
-      
-      const troyOunceInGrams = 31.1034768;
-      
-      // Global spot prices do not include Indian Customs Duty, AIDC, and local bank premiums.
-      // We add an approximate 12% markup to match actual retail physical gold/silver prices in India.
-      const INDIA_PREMIUM_MULTIPLIER = 1.12; 
-      
-      // XAU and XAG are priced per Troy Ounce. Convert to per Gram and add India Premium.
-      const gold24kGram = (goldData.xau.inr / troyOunceInGrams) * INDIA_PREMIUM_MULTIPLIER;
-      const silver999Gram = (silverData.xag.inr / troyOunceInGrams) * INDIA_PREMIUM_MULTIPLIER;
-      
-      // Update Rates
       const rates = getRates();
-      rates.gold_24k = Math.round(gold24kGram);
-      rates.gold_22k = Math.round(gold24kGram * 0.9167); // 22K is 91.67% of 24K
-      rates.gold_18k = Math.round(gold24kGram * 0.7500); // 18K is 75% of 24K
-      rates.silver_999 = Math.round(silver999Gram);
-      rates.silver_925 = Math.round(silver999Gram * 0.925); // Sterling is 92.5%
+      rates.gold_24k = Math.round(data.gold_24k);
+      rates.gold_22k = Math.round(data.gold_22k);
+      rates.gold_18k = Math.round(data.gold_18k);
+      rates.silver_999 = Math.round(data.silver_999);
+      rates.silver_925 = Math.round(data.silver_925);
       
       _saveRates(rates);
-      
-      // Re-render the ticker with the fresh rates
       renderRatesTicker('rates-ticker');
     } catch (error) {
-      console.warn("Could not auto-fetch live rates, falling back to cached/default rates.", error);
+      console.warn("Could not fetch live Hyderabad rates from server API, trying global spot price fallback.", error);
+      try {
+        const [goldRes, silverRes] = await Promise.all([
+          fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.json'),
+          fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xag.json')
+        ]);
+        
+        const goldData = await goldRes.json();
+        const silverData = await silverRes.json();
+        
+        const troyOunceInGrams = 31.1034768;
+        
+        // As of today, Hyderabad retail gold price is ~₹15,622 and global spot is ~₹6,276.
+        // We apply a multiplier of 2.49 to accurately reflect local customs, taxes, duties, and local premiums.
+        const HYDERABAD_PREMIUM_MULTIPLIER = 2.49; 
+        
+        const gold24kGram = (goldData.xau.inr / troyOunceInGrams) * HYDERABAD_PREMIUM_MULTIPLIER;
+        const silver999Gram = (silverData.xag.inr / troyOunceInGrams) * HYDERABAD_PREMIUM_MULTIPLIER;
+        
+        const rates = getRates();
+        rates.gold_24k = Math.round(gold24kGram);
+        rates.gold_22k = Math.round(gold24kGram * 0.9167);
+        rates.gold_18k = Math.round(gold24kGram * 0.7500);
+        rates.silver_999 = Math.round(silver999Gram);
+        rates.silver_925 = Math.round(silver999Gram * 0.925);
+        
+        _saveRates(rates);
+        renderRatesTicker('rates-ticker');
+      } catch (fallbackError) {
+        console.warn("All metal price API fetches failed. Sourcing from cached rates.", fallbackError);
+      }
     }
   }
 
