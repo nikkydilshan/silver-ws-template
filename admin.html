@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Portal | Mahadev Jewellers</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="logo">
+        <svg class="logo-svg" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="logoGold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#F5EEDF" />
+              <stop offset="40%" stop-color="#C5A059" />
+              <stop offset="100%" stop-color="#A88443" />
+            </linearGradient>
+          </defs>
+          <text x="1" y="27" font-family="'Playfair Display', 'Georgia', serif" font-size="21" font-weight="900" fill="url(#logoGold)">M</text>
+          <text x="16.5" y="32" font-family="'Playfair Display', 'Georgia', serif" font-size="21" font-weight="900" fill="url(#logoGold)">J</text>
+          <polygon points="21,5 29,5 33,9 25,17 17,9" fill="url(#logoGold)" fill-opacity="0.15" stroke="url(#logoGold)" stroke-width="1.2" stroke-linejoin="round" />
+          <line x1="17" y1="9" x2="33" y2="9" stroke="#FFF" stroke-width="0.8" opacity="0.8" />
+          <line x1="21" y1="5" x2="21" y2="9" stroke="#FFF" stroke-width="0.6" opacity="0.6" />
+          <line x1="25" y1="5" x2="25" y2="9" stroke="#FFF" stroke-width="0.6" opacity="0.6" />
+          <line x1="29" y1="5" x2="29" y2="9" stroke="#FFF" stroke-width="0.6" opacity="0.6" />
+          <line x1="21" y1="9" x2="25" y2="17" stroke="#FFF" stroke-width="0.6" opacity="0.6" />
+          <line x1="25" y1="9" x2="25" y2="17" stroke="#FFF" stroke-width="0.6" opacity="0.8" />
+          <line x1="29" y1="9" x2="25" y2="17" stroke="#FFF" stroke-width="0.6" opacity="0.6" />
+        </svg>
+        Mahadev <span>Jewellers</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop All</a>
+        <a href="about.html">Our Legacy</a>
+        <a href="contact.html">Contact Us</a>
+      </div>
+      <div class="nav-actions">
+        <a href="wishlist.html" class="nav-icon" title="View Wishlist">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span class="wishlist-badge" style="display:none">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="admin-wrapper">
+    <!-- Passcode Login Card -->
+    <div id="login-section" class="admin-login-container">
+      <div class="admin-login-header">
+        <h2>Staff Portal</h2>
+        <p>Choose your role and enter passcode to sign in</p>
+      </div>
+
+      <!-- Tab selectors -->
+      <div class="role-tabs">
+        <button id="tab-admin" class="role-tab-btn active" onclick="setRole('admin')">Admin</button>
+        <button id="tab-super" class="role-tab-btn" onclick="setRole('super')">Super Admin</button>
+      </div>
+
+      <div class="pin-input-group">
+        <input type="password" id="passcode" class="pin-display" placeholder="••••" maxlength="4" autocomplete="off" oninput="validatePinOnInput()">
+      </div>
+
+      <button onclick="login()" class="admin-login-btn">Sign In</button>
+
+      <p class="pin-hint">
+        Hint: Admin PIN is <strong>1234</strong>. Super Admin PIN is <strong>9999</strong>.
+      </p>
+    </div>
+
+    <!-- Dashboard Content (Hidden until login) -->
+    <div id="dashboard-section" class="dashboard-container" style="display: none;">
+      
+      <!-- Top header banner -->
+      <div class="dashboard-header">
+        <div class="dashboard-brand">
+          <h2>Mahadev Staff Dashboard <span id="role-badge">Admin</span></h2>
+        </div>
+        <div class="dashboard-nav-actions">
+          <button onclick="logout()" class="logout-btn">Log Out</button>
+        </div>
+      </div>
+
+      <!-- General Statistics Grid -->
+      <div class="dashboard-stats-grid">
+        <div class="stat-card">
+          <span class="stat-title">Total Products</span>
+          <span id="stat-total" class="stat-value">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-title">In Stock</span>
+          <span id="stat-instock" class="stat-value">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-title">Out of Stock</span>
+          <span id="stat-outofstock" class="stat-value">0</span>
+        </div>
+      </div>
+
+      <!-- Tabs Navigation -->
+      <div class="dashboard-main-tabs">
+        <button id="nav-tab-products" class="dashboard-tab-btn active" onclick="switchDashboardTab('products')">Manage Catalog</button>
+        <button id="nav-tab-rates" class="dashboard-tab-btn" onclick="switchDashboardTab('rates')">Metal Rates Editor</button>
+        <button id="nav-tab-dev" class="dashboard-tab-btn" onclick="switchDashboardTab('dev')">Developer Tools</button>
+      </div>
+
+      <!-- TAB 1: Products Panel -->
+      <div id="panel-products" class="tab-panel">
+        <div class="products-panel">
+          <div class="panel-header">
+            <div class="search-wrap">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="search-box" class="search-input" placeholder="Search catalog items..." oninput="renderTable()">
+            </div>
+            <button onclick="openAddModal()" class="add-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Add New Product
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Product Details</th>
+                  <th>Category</th>
+                  <th>Subcategory</th>
+                  <th>Weight</th>
+                  <th>Stock Availability</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="table-body">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: Metal Rates Panel -->
+      <div id="panel-rates" class="tab-panel" style="display: none;">
+        <div id="admin-rates-container">
+          <!-- Injected directly via PricingEngine -->
+        </div>
+      </div>
+
+      <!-- TAB 3: Developer Tools Panel -->
+      <div id="panel-dev" class="tab-panel" style="display: none;">
+        <div class="dev-console-wrapper">
+          <h3 class="playfair" style="margin-bottom: 0.5rem;">Database Import / Export</h3>
+          <p style="color: #6a6660; margin-bottom: 1.5rem; font-size: 0.95rem;">
+            Export the current product database as raw JSON text to paste it directly into code, or import a JSON database to restore a snapshot.
+          </p>
+          <textarea id="dev-json" class="dev-text-area" spellcheck="false"></textarea>
+          <div class="admin-actions">
+            <button onclick="exportJSON()" class="btn btn-outline">Export JSON</button>
+            <button onclick="importJSON()" class="btn btn-primary">Import / Load JSON</button>
+            <button onclick="resetDatabase()" class="btn btn-outline" style="border-color: var(--admin-danger-color); color: var(--admin-danger-color); margin-left: auto;">Reset to Defaults</button>
+          </div>
+          <div id="dev-status" class="admin-status" style="display: none;"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL: Add Product Form -->
+  <div id="add-modal" class="admin-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add New Product</h3>
+        <button onclick="closeAddModal()" class="modal-close-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="add-form" onsubmit="handleFormSubmit(event)">
+          <div class="form-group">
+            <label for="p-name">Product Name *</label>
+            <input type="text" id="p-name" class="form-control" placeholder="e.g. Elegant Silver Puja Plate" required>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="p-category">Category *</label>
+              <select id="p-category" class="form-control" onchange="updateSubcategoriesSelect()" required>
+                <option value="Silver">Silver</option>
+                <option value="Gold">Gold</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="p-subcategory">Subcategory *</label>
+              <select id="p-subcategory" class="form-control" required>
+                <!-- Filled dynamically based on Category selection -->
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="p-metal">Metal Type (Pricing Code) *</label>
+              <select id="p-metal" class="form-control" required>
+                <option value="silver_925">925 Sterling Silver</option>
+                <option value="silver_999">999 Fine Silver</option>
+                <option value="gold_22k">22K Gold (Jewelry)</option>
+                <option value="gold_24k">24K Pure Gold</option>
+                <option value="gold_18k">18K Gold</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="p-weight">Net Weight (Grams) *</label>
+              <input type="number" id="p-weight" class="form-control" min="0.01" step="0.01" placeholder="e.g. 45" required>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="p-wastage">Wastage Percent (%) *</label>
+              <input type="number" id="p-wastage" class="form-control" min="0" step="0.1" placeholder="e.g. 10" required>
+            </div>
+            <div class="form-group">
+              <label for="p-making">Making Charges (₹ Flat) *</label>
+              <input type="number" id="p-making" class="form-control" min="0" placeholder="e.g. 1200" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="p-image">Product Image *</label>
+            <select id="p-image" class="form-control" required>
+              <option value="assets/images/ganesha_idol.png">Lord Ganesha Idol Image</option>
+              <option value="assets/images/oxidized_necklace.png">Necklace Jewelry Image</option>
+              <option value="assets/images/silver_jhumkas.png">Earrings Jhumkas Image</option>
+              <option value="assets/images/silver_bangle.png">Bangle Jewelry Image</option>
+              <option value="assets/images/silver_anklet.png">Anklets Jewelry Image</option>
+              <option value="assets/images/silver_diya.png">Pooja Diya Set Image</option>
+              <option value="assets/images/aarti_thali.png">Sacred Aarti Thali Image</option>
+              <option value="assets/images/silver_ghanti.png">Prayer Bell (Ghanti) Image</option>
+            </select>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="p-material">Display Purity Description *</label>
+              <input type="text" id="p-material" class="form-control" placeholder="e.g. 92.5 Sterling Silver" required>
+            </div>
+            <div class="form-group">
+              <label for="p-occasion">Occasion Category *</label>
+              <select id="p-occasion" class="form-control" required>
+                <option value="Daily Pooja">Daily Pooja</option>
+                <option value="Festivals">Festivals</option>
+                <option value="Weddings">Weddings</option>
+                <option value="Bridal">Bridal</option>
+                <option value="Daily Wear">Daily Wear</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="p-description">Product Description *</label>
+            <textarea id="p-description" class="form-control" rows="3" placeholder="Describe the item craftsmanship..." required></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" onclick="closeAddModal()" class="btn btn-outline" style="padding: 0.6rem 1.5rem;">Cancel</button>
+            <button type="submit" class="btn btn-primary" style="padding: 0.6rem 1.5rem;">Save Item</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer" style="margin-top: 6rem;">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 Mahadev Jewellers. Staff Dashboard Portal.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Core Scripts -->
+  <script src="js/pricing.js"></script>
+  <script src="js/products.js"></script>
+  
+  <script>
+    let activeRole = 'admin'; // 'admin' or 'super'
+    let isLoggedIn = false;
+
+    // Define Passcodes
+    const PASSCODES = {
+      admin: '1234',
+      super: '9999'
+    };
+
+    function setRole(role) {
+      activeRole = role;
+      document.getElementById('tab-admin').classList.toggle('active', role === 'admin');
+      document.getElementById('tab-super').classList.toggle('active', role === 'super');
+      document.getElementById('passcode').value = '';
+      document.getElementById('passcode').focus();
+    }
+
+    function validatePinOnInput() {
+      const pin = document.getElementById('passcode').value;
+      if (pin.length === 4) {
+        login();
+      }
+    }
+
+    function login() {
+      const enteredPin = document.getElementById('passcode').value;
+      if (enteredPin === PASSCODES[activeRole]) {
+        isLoggedIn = true;
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('dashboard-section').style.display = 'block';
+        
+        // Update UI displays based on role
+        document.getElementById('role-badge').textContent = activeRole === 'admin' ? 'Shop Owner' : 'Super Admin / Developer';
+        
+        // Hide/Show tabs based on role
+        document.getElementById('nav-tab-rates').style.display = activeRole === 'super' ? 'block' : 'none';
+        document.getElementById('nav-tab-dev').style.display = activeRole === 'super' ? 'block' : 'none';
+        
+        // Default to products tab
+        switchDashboardTab('products');
+        
+        // Load stats and tables
+        updateStats();
+        renderTable();
+        
+        // Initialize Daily Rates Editor inside Super Admin view if loaded
+        if (activeRole === 'super' && typeof PricingEngine !== 'undefined') {
+          PricingEngine.renderAdminPanel('admin-rates-container');
+        }
+      } else {
+        alert('Incorrect passcode. Please try again!');
+        document.getElementById('passcode').value = '';
+        document.getElementById('passcode').focus();
+      }
+    }
+
+    function logout() {
+      isLoggedIn = false;
+      document.getElementById('passcode').value = '';
+      document.getElementById('dashboard-section').style.display = 'none';
+      document.getElementById('login-section').style.display = 'block';
+    }
+
+    function switchDashboardTab(tabId) {
+      document.querySelectorAll('.tab-panel').forEach(panel => panel.style.display = 'none');
+      document.querySelectorAll('.dashboard-tab-btn').forEach(btn => btn.classList.remove('active'));
+
+      document.getElementById('panel-' + tabId).style.display = 'block';
+      document.getElementById('nav-tab-' + tabId).classList.add('active');
+    }
+
+    // Stats calculation
+    function updateStats() {
+      const all = ProductManager.getAll();
+      document.getElementById('stat-total').textContent = all.length;
+      document.getElementById('stat-instock').textContent = all.filter(p => p.availability === 'In Stock').length;
+      document.getElementById('stat-outofstock').textContent = all.filter(p => p.availability === 'Out of Stock').length;
+    }
+
+    // Dropdown updates for adding products
+    function updateSubcategoriesSelect() {
+      const category = document.getElementById('p-category').value;
+      const subSelect = document.getElementById('p-subcategory');
+      subSelect.innerHTML = '';
+      
+      const subs = category === 'Gold' ? subcategoriesGold : subcategoriesSilver;
+      subs.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        subSelect.appendChild(opt);
+      });
+    }
+
+    // Manage Add Modals
+    function openAddModal() {
+      document.getElementById('add-form').reset();
+      updateSubcategoriesSelect();
+      document.getElementById('add-modal').classList.add('show');
+    }
+
+    function closeAddModal() {
+      document.getElementById('add-modal').classList.remove('show');
+    }
+
+    // Form Submission
+    function handleFormSubmit(event) {
+      event.preventDefault();
+      
+      const p = {
+        name: document.getElementById('p-name').value,
+        category: document.getElementById('p-category').value,
+        subcategory: document.getElementById('p-subcategory').value,
+        metalType: document.getElementById('p-metal').value,
+        weightGrams: parseFloat(document.getElementById('p-weight').value),
+        wastagePercent: parseFloat(document.getElementById('p-wastage').value),
+        makingCharges: parseInt(document.getElementById('p-making').value),
+        image: document.getElementById('p-image').value,
+        material: document.getElementById('p-material').value,
+        availability: 'In Stock',
+        occasion: document.getElementById('p-occasion').value,
+        description: document.getElementById('p-description').value,
+        specifications: [
+          `Net Weight: ${document.getElementById('p-weight').value} grams`,
+          `Purity: ${document.getElementById('p-material').value}`,
+          `Wastage: ${document.getElementById('p-wastage').value}%`
+        ]
+      };
+
+      ProductManager.add(p);
+      closeAddModal();
+      updateStats();
+      renderTable();
+    }
+
+    // Change Stock Status directly from table
+    function changeStockStatus(productId, selectEl) {
+      const newStatus = selectEl.value;
+      ProductManager.updateStatus(productId, newStatus);
+      
+      // Update styling
+      selectEl.className = 'status-select ' + newStatus.toLowerCase().replace(' ', '-');
+      updateStats();
+    }
+
+    // Delete item
+    function deleteItem(id) {
+      if (confirm('Are you sure you want to delete this product?')) {
+        ProductManager.deleteProduct(id);
+        updateStats();
+        renderTable();
+      }
+    }
+
+    // Render Manage Products Table
+    function renderTable() {
+      const tbody = document.getElementById('table-body');
+      const searchQuery = document.getElementById('search-box').value.toLowerCase();
+      
+      const all = ProductManager.getAll();
+      const filtered = all.filter(p => p.name.toLowerCase().includes(searchQuery) || p.subcategory.toLowerCase().includes(searchQuery));
+      
+      tbody.innerHTML = filtered.map(p => {
+        const formattedPrice = getProductPrice(p).totalPrice.toLocaleString('en-IN');
+        return `
+          <tr>
+            <td>
+              <div class="table-product-info">
+                <img src="${p.image}" alt="${p.name}">
+                <div>
+                  <div class="table-product-name">${p.name}</div>
+                  <div class="table-product-sub">ID: #${p.id} | Price: ₹${formattedPrice}</div>
+                </div>
+              </div>
+            </td>
+            <td><strong>${p.category}</strong></td>
+            <td>${p.subcategory}</td>
+            <td>${p.weightGrams}g</td>
+            <td>
+              <select class="status-select ${p.availability.toLowerCase().replace(' ', '-')}" onchange="changeStockStatus(${p.id}, this)">
+                <option value="In Stock" ${p.availability === 'In Stock' ? 'selected' : ''}>In Stock</option>
+                <option value="Low Stock" ${p.availability === 'Low Stock' ? 'selected' : ''}>Low Stock</option>
+                <option value="Out of Stock" ${p.availability === 'Out of Stock' ? 'selected' : ''}>Out of Stock</option>
+              </select>
+            </td>
+            <td>
+              <button onclick="deleteItem(${p.id})" class="delete-action-btn" title="Delete Product">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Super Admin Dev Tools logic
+    function exportJSON() {
+      const all = ProductManager.getAll();
+      const text = JSON.stringify(all, null, 2);
+      document.getElementById('dev-json').value = text;
+
+      const status = document.getElementById('dev-status');
+      status.style.display = 'block';
+      status.className = 'admin-status success';
+      status.textContent = '✓ Database JSON successfully exported to console area! You can copy it now.';
+      setTimeout(() => { status.style.display = 'none'; }, 4000);
+    }
+
+    function importJSON() {
+      const text = document.getElementById('dev-json').value;
+      const status = document.getElementById('dev-status');
+      try {
+        const parsed = JSON.parse(text);
+        if (Array.isArray(parsed)) {
+          localStorage.setItem('mahadev_products_db', JSON.stringify(parsed));
+          updateStats();
+          renderTable();
+          status.style.display = 'block';
+          status.className = 'admin-status success';
+          status.textContent = '✓ Database successfully loaded and updated from JSON input!';
+        } else {
+          throw new Error('JSON is not a product list array');
+        }
+      } catch (e) {
+        status.style.display = 'block';
+        status.className = 'admin-status error';
+        status.style.backgroundColor = 'var(--admin-danger-bg)';
+        status.style.color = 'var(--admin-danger-color)';
+        status.style.borderColor = '#ffcdd2';
+        status.textContent = '✗ Invalid JSON format. Make sure it is a valid array of product objects.';
+      }
+      setTimeout(() => { status.style.display = 'none'; }, 4500);
+    }
+
+    function resetDatabase() {
+      if (confirm('Are you sure you want to reset the database to defaults? All custom products and stock changes will be lost.')) {
+        ProductManager.reset();
+        updateStats();
+        renderTable();
+        
+        const status = document.getElementById('dev-status');
+        status.style.display = 'block';
+        status.className = 'admin-status info';
+        status.textContent = 'Database re-seeded with default values.';
+        setTimeout(() => { status.style.display = 'none'; }, 3000);
+      }
+    }
+
+    // Default focus
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('passcode').focus();
+    });
+  </script>
+</body>
+</html>

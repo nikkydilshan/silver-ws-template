@@ -1,4 +1,4 @@
-const products = [
+const INITIAL_PRODUCTS = [
   // ─── SILVER PRODUCTS ───
   {
     id: 1,
@@ -321,3 +321,76 @@ function getProductPrice(product) {
   // Fallback if PricingEngine not loaded
   return { totalPrice: product.weightGrams * 89, ratePerGram: 89, metalCost: 0, wastageCost: 0, makingCharges: 0 };
 }
+
+// ─── Product Database Manager ───
+const ProductManager = (() => {
+  const STORAGE_KEY = 'mahadev_products_db';
+
+  function _load() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch (e) { /* ignore */ }
+    // First run — seed with INITIAL_PRODUCTS
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_PRODUCTS));
+    return INITIAL_PRODUCTS;
+  }
+
+  function _save(list) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  }
+
+  function getAll() {
+    return _load();
+  }
+
+  function add(product) {
+    const list = _load();
+    // Generate incremental ID
+    const maxId = list.reduce((max, p) => p.id > max ? p.id : max, 0);
+    product.id = maxId + 1;
+    list.push(product);
+    _save(list);
+    return product;
+  }
+
+  function updateStatus(id, availability) {
+    const list = _load();
+    const product = list.find(p => p.id === id);
+    if (product) {
+      product.availability = availability;
+      _save(list);
+      return true;
+    }
+    return false;
+  }
+
+  function deleteProduct(id) {
+    let list = _load();
+    list = list.filter(p => p.id !== id);
+    _save(list);
+  }
+
+  function reset() {
+    localStorage.removeItem(STORAGE_KEY);
+    return _load();
+  }
+
+  return {
+    getAll,
+    add,
+    updateStatus,
+    deleteProduct,
+    reset,
+  };
+})();
+
+// Dynamically expose products list globally for backward compatibility
+Object.defineProperty(window, 'products', {
+  get() {
+    return ProductManager.getAll();
+  },
+  configurable: true
+});
