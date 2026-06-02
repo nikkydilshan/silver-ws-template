@@ -481,6 +481,72 @@ const ProductManager = (() => {
     return true;
   }
 
+  function uploadImage(file, authHeaders = null) {
+    return new Promise((resolve, reject) => {
+      if (!isOnline) {
+        // Local offline fallback: convert image file to Base64 data-URL
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          resolve(e.target.result); // Base64 representation
+        };
+        reader.onerror = function(e) {
+          reject(new Error("Failed to read file for local base64 storage."));
+        };
+        reader.readAsDataURL(file);
+        return;
+      }
+
+      // Online: upload via multipart/form-data POST
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', API_URL, true); // Async upload is fine inside Promise
+
+      let userHash = "";
+      let passHash = "";
+
+      if (authHeaders) {
+        userHash = authHeaders.usernameHash;
+        passHash = authHeaders.passwordHash;
+      } else {
+        userHash = sessionStorage.getItem('mahadev_admin_user') || '';
+        passHash = sessionStorage.getItem('mahadev_admin_pass') || '';
+      }
+
+      xhr.setRequestHeader('X-Admin-User', userHash);
+      xhr.setRequestHeader('X-Admin-Pass', passHash);
+
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          try {
+            const resp = JSON.parse(xhr.responseText);
+            if (resp.success && resp.filePath) {
+              resolve(resp.filePath);
+            } else {
+              reject(new Error(resp.error || "Unknown server response format."));
+            }
+          } catch(e) {
+            reject(new Error("Failed to parse server upload response."));
+          }
+        } else {
+          try {
+            const resp = JSON.parse(xhr.responseText);
+            reject(new Error(resp.error || "Upload failed with status code " + xhr.status));
+          } catch(e) {
+            reject(new Error("Upload failed with status code " + xhr.status));
+          }
+        }
+      };
+
+      xhr.onerror = function() {
+        reject(new Error("Network error during file upload."));
+      };
+
+      xhr.send(formData);
+    });
+  }
+
   return {
     getAll,
     add,
@@ -488,6 +554,7 @@ const ProductManager = (() => {
     deleteProduct,
     reset,
     importDB,
+    uploadImage,
     isOnline: () => isOnline
   };
 })();

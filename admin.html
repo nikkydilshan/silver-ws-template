@@ -238,17 +238,23 @@
           </div>
 
           <div class="form-group">
-            <label for="p-image">Product Image *</label>
-            <select id="p-image" class="form-control" required>
-              <option value="assets/images/ganesha_idol.png">Lord Ganesha Idol Image</option>
-              <option value="assets/images/oxidized_necklace.png">Necklace Jewelry Image</option>
-              <option value="assets/images/silver_jhumkas.png">Earrings Jhumkas Image</option>
-              <option value="assets/images/silver_bangle.png">Bangle Jewelry Image</option>
-              <option value="assets/images/silver_anklet.png">Anklets Jewelry Image</option>
-              <option value="assets/images/silver_diya.png">Pooja Diya Set Image</option>
-              <option value="assets/images/aarti_thali.png">Sacred Aarti Thali Image</option>
-              <option value="assets/images/silver_ghanti.png">Prayer Bell (Ghanti) Image</option>
-            </select>
+            <label>Product Image *</label>
+            <div class="file-upload-wrapper">
+              <div class="file-upload-drag-area" id="drag-area">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <div class="file-upload-text">Drag & Drop image here or click to browse</div>
+                <div class="file-upload-subtext">Supports PNG, JPG, JPEG, GIF, WEBP (Max 5MB)</div>
+                <input type="file" id="p-image-file" accept="image/*" style="display: none;" required>
+              </div>
+              <div class="file-upload-preview-container">
+                <img id="image-preview" class="file-upload-preview" alt="Preview">
+                <button type="button" id="remove-image-btn" class="file-remove-btn">Remove</button>
+              </div>
+            </div>
           </div>
 
           <div class="form-grid-2">
@@ -398,6 +404,7 @@
 
     function openAddModal() {
       document.getElementById('add-form').reset();
+      resetFileUploader();
       updateSubcategoriesSelect();
       document.getElementById('add-modal').classList.add('show');
     }
@@ -406,35 +413,71 @@
       document.getElementById('add-modal').classList.remove('show');
     }
 
+    function resetFileUploader() {
+      const fileInput = document.getElementById('p-image-file');
+      fileInput.value = '';
+      const preview = document.getElementById('image-preview');
+      preview.src = '';
+      preview.style.display = 'none';
+      const removeBtn = document.getElementById('remove-image-btn');
+      if (removeBtn) removeBtn.style.display = 'none';
+      const dragAreaText = document.querySelector('#drag-area .file-upload-text');
+      if (dragAreaText) dragAreaText.textContent = "Drag & Drop image here or click to browse";
+    }
+
     // Form Submission
-    function handleFormSubmit(event) {
+    async function handleFormSubmit(event) {
       event.preventDefault();
       
-      const p = {
-        name: document.getElementById('p-name').value,
-        category: document.getElementById('p-category').value,
-        subcategory: document.getElementById('p-subcategory').value,
-        metalType: document.getElementById('p-metal').value,
-        weightGrams: parseFloat(document.getElementById('p-weight').value),
-        wastagePercent: parseFloat(document.getElementById('p-wastage').value),
-        makingCharges: parseInt(document.getElementById('p-making').value),
-        image: document.getElementById('p-image').value,
-        material: document.getElementById('p-material').value,
-        availability: 'In Stock',
-        occasion: document.getElementById('p-occasion').value,
-        description: document.getElementById('p-description').value,
-        specifications: [
-          `Net Weight: ${document.getElementById('p-weight').value} grams`,
-          `Purity: ${document.getElementById('p-material').value}`,
-          `Wastage: ${document.getElementById('p-wastage').value}%`
-        ]
-      };
+      const fileInput = document.getElementById('p-image-file');
+      if (!fileInput.files || fileInput.files.length === 0) {
+        alert("Please select or drag an image file.");
+        return;
+      }
+      
+      const file = fileInput.files[0];
+      
+      // Get the submit button and show loading text
+      const submitBtn = event.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Uploading image...";
 
-      const success = ProductManager.add(p);
-      if (success) {
-        closeAddModal();
-        updateStats();
-        renderTable();
+      try {
+        const imagePath = await ProductManager.uploadImage(file);
+        
+        const p = {
+          name: document.getElementById('p-name').value,
+          category: document.getElementById('p-category').value,
+          subcategory: document.getElementById('p-subcategory').value,
+          metalType: document.getElementById('p-metal').value,
+          weightGrams: parseFloat(document.getElementById('p-weight').value),
+          wastagePercent: parseFloat(document.getElementById('p-wastage').value),
+          makingCharges: parseInt(document.getElementById('p-making').value),
+          image: imagePath,
+          material: document.getElementById('p-material').value,
+          availability: 'In Stock',
+          occasion: document.getElementById('p-occasion').value,
+          description: document.getElementById('p-description').value,
+          specifications: [
+            `Net Weight: ${document.getElementById('p-weight').value} grams`,
+            `Purity: ${document.getElementById('p-material').value}`,
+            `Wastage: ${document.getElementById('p-wastage').value}%`
+          ]
+        };
+
+        const success = ProductManager.add(p);
+        if (success) {
+          closeAddModal();
+          updateStats();
+          renderTable();
+          resetFileUploader();
+        }
+      } catch (err) {
+        alert("Error saving product: " + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
       }
     }
 
@@ -557,9 +600,88 @@
       }
     }
 
+    function initImageUpload() {
+      const dragArea = document.getElementById('drag-area');
+      const fileInput = document.getElementById('p-image-file');
+      const preview = document.getElementById('image-preview');
+      const removeBtn = document.getElementById('remove-image-btn');
+      const dragAreaText = dragArea.querySelector('.file-upload-text');
+
+      if (!dragArea || !fileInput) return;
+
+      // Click to browse
+      dragArea.addEventListener('click', (e) => {
+        if (e.target !== fileInput) {
+          fileInput.click();
+        }
+      });
+
+      // Handle file selection
+      fileInput.addEventListener('change', () => {
+        handleFiles(fileInput.files);
+      });
+
+      // Drag and drop event listeners
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dragArea.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dragArea.classList.add('dragover');
+        }, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dragArea.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dragArea.classList.remove('dragover');
+        }, false);
+      });
+
+      dragArea.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files && files.length > 0) {
+          fileInput.files = files;
+          handleFiles(files);
+        }
+      }, false);
+
+      function handleFiles(files) {
+        if (files.length === 0) return;
+        const file = files[0];
+        
+        // Basic type validation
+        if (!file.type.startsWith('image/')) {
+          alert('Please select an image file (PNG, JPG, GIF, WEBP).');
+          resetFileUploader();
+          return;
+        }
+
+        // Show file name
+        dragAreaText.textContent = `Selected: ${file.name}`;
+
+        // Show image preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+          removeBtn.style.display = 'inline-block';
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // Remove button click
+      removeBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // prevent opening file browser again
+        resetFileUploader();
+      });
+    }
+
     // Default focus
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('username').focus();
+      initImageUpload();
     });
   </script>
 </body>

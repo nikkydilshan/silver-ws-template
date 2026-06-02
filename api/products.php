@@ -65,6 +65,58 @@ if ($method === 'POST') {
         exit;
     }
 
+    // --- Process File Uploads ---
+    if (isset($_FILES['image'])) {
+        $file = $_FILES['image'];
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            http_response_code(400);
+            header('Content-Type: application/json');
+            echo json_encode(["error" => "File upload failed with error code: " . $file['error']]);
+            exit;
+        }
+        if ($file['size'] > 5 * 1024 * 1024) {
+            http_response_code(400);
+            header('Content-Type: application/json');
+            echo json_encode(["error" => "File size exceeds the 5MB limit."]);
+            exit;
+        }
+        $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $file_info = getimagesize($file['tmp_name']);
+        if ($file_info === false || !in_array($file_info['mime'], $allowed_types)) {
+            http_response_code(400);
+            header('Content-Type: application/json');
+            echo json_encode(["error" => "Invalid image type. Only JPG, PNG, GIF, and WEBP are allowed."]);
+            exit;
+        }
+        $path_parts = pathinfo($file['name']);
+        $ext = isset($path_parts['extension']) ? strtolower($path_parts['extension']) : '';
+        $allowed_exts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        if (!in_array($ext, $allowed_exts)) {
+            http_response_code(400);
+            header('Content-Type: application/json');
+            echo json_encode(["error" => "Invalid file extension."]);
+            exit;
+        }
+        $upload_dir = __DIR__ . '/../assets/images/uploads/';
+        if (!file_exists($upload_dir)) {
+            mkdir($upload_dir, 0755, true);
+        }
+        $new_filename = uniqid('prod_', true) . '.' . $ext;
+        $dest_path = $upload_dir . $new_filename;
+        if (move_uploaded_file($file['tmp_name'], $dest_path)) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                "success" => true,
+                "filePath" => "assets/images/uploads/" . $new_filename
+            ]);
+        } else {
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode(["error" => "Failed to save uploaded file."]);
+        }
+        exit;
+    }
+
     // --- Process Write Operations ---
     $input = json_decode(file_get_contents('php://input'), true);
     if (!$input || !isset($input['action'])) {
