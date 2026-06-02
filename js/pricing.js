@@ -1,5 +1,5 @@
 /**
- * Navdurga Jewellers — Precious Metal Pricing Engine
+ * Mahadev Jewellers — Precious Metal Pricing Engine
  * ---------------------------------------------------
  * This module manages daily gold & silver rates, and computes
  * ornament prices using the industry-standard formula:
@@ -24,7 +24,7 @@ const PricingEngine = (() => {
     silver_925: 89,    // 925 sterling silver per gram
   };
 
-  const STORAGE_KEY = 'navdurga_metal_rates';
+  const STORAGE_KEY = 'mahadev_metal_rates';
 
   // ─── Rate Persistence ───
   function _loadRates() {
