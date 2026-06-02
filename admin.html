@@ -299,46 +299,23 @@
     let activeRole = 'admin'; // 'admin' or 'super'
     let isLoggedIn = false;
 
-    // Secure SHA-256 hashing helper using native Web Crypto API
-    async function sha256(str) {
-      const buf = new TextEncoder().encode(str);
-      const hash = await crypto.subtle.digest('SHA-256', buf);
-      let hex = '';
-      const bytes = new Uint8Array(hash);
-      for (let i = 0; i < bytes.byteLength; i++) {
-        hex += bytes[i].toString(16).padStart(2, '0');
-      }
-      return hex;
-    }
-
-    // Handles login submission securely
-    async function handleLoginSubmit(event) {
+    // Handles login submission
+    function handleLoginSubmit(event) {
       event.preventDefault();
       
       const user = document.getElementById('username').value.trim();
       const pass = document.getElementById('password').value.trim();
       
-      // Hash inputs
-      const userHash = await sha256(user);
-      const passHash = await sha256(pass);
-      
-      // Pre-calculated credential hashes
-      const ADMIN_USER_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; // hash of 'admin'
-      const ADMIN_PASS_HASH = 'bacc33bc1673d6862c5eb724f23dfbfe790182accb9fbd19503af2f6a8d18813'; // hash of 'shopowner'
-
-      const SUPER_USER_HASH = '186cf774c97b60a1c106ef718d10970a6a06e06bef89553d9ae65d938a886eae'; // hash of 'superadmin'
-      const SUPER_PASS_HASH = '88fa0d759f845b47c044c2cd44e29082cf6fea665c30c146374ec7c8f3d699e3'; // hash of 'developer'
-
-      const is_admin = (userHash === ADMIN_USER_HASH && passHash === ADMIN_PASS_HASH);
-      const is_super = (userHash === SUPER_USER_HASH && passHash === SUPER_PASS_HASH);
+      const is_admin = (user === 'admin' && pass === 'shopowner');
+      const is_super = (user === 'superadmin' && pass === 'developer');
 
       if (is_admin || is_super) {
         isLoggedIn = true;
         activeRole = is_super ? 'super' : 'admin';
         
-        // Store hashes in sessionStorage for outgoing XHR API requests
-        sessionStorage.setItem('mahadev_admin_user', userHash);
-        sessionStorage.setItem('mahadev_admin_pass', passHash);
+        // Store credentials in sessionStorage for outgoing XHR API requests
+        sessionStorage.setItem('mahadev_admin_user', user);
+        sessionStorage.setItem('mahadev_admin_pass', pass);
         
         // Switch views
         document.getElementById('login-section').style.display = 'none';
