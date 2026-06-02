@@ -48,15 +48,15 @@ if ($method === 'POST') {
         $authPass = isset($_SERVER['HTTP_X_ADMIN_PASS']) ? $_SERVER['HTTP_X_ADMIN_PASS'] : '';
     }
 
-    // Secure SHA-256 hashes of credentials
-    $ADMIN_USER_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; // hash of 'admin'
-    $ADMIN_PASS_HASH = 'bacc33bc1673d6862c5eb724f23dfbfe790182accb9fbd19503af2f6a8d18813'; // hash of 'shopowner'
+    // Plain-text credentials
+    $ADMIN_USER = 'admin';
+    $ADMIN_PASS = 'shopowner';
 
-    $SUPER_USER_HASH = '186cf774c97b60a1c106ef718d10970a6a06e06bef89553d9ae65d938a886eae'; // hash of 'superadmin'
-    $SUPER_PASS_HASH = '88fa0d759f845b47c044c2cd44e29082cf6fea665c30c146374ec7c8f3d699e3'; // hash of 'developer'
+    $SUPER_USER = 'superadmin';
+    $SUPER_PASS = 'developer';
 
-    $is_admin = ($authUser === $ADMIN_USER_HASH && $authPass === $ADMIN_PASS_HASH);
-    $is_super = ($authUser === $SUPER_USER_HASH && $authPass === $SUPER_PASS_HASH);
+    $is_admin = ($authUser === $ADMIN_USER && $authPass === $ADMIN_PASS);
+    $is_super = ($authUser === $SUPER_USER && $authPass === $SUPER_PASS);
 
     if (!$is_admin && !$is_super) {
         http_response_code(401);
