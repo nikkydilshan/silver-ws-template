@@ -52,27 +52,30 @@
   </nav>
 
   <div class="admin-wrapper">
-    <!-- Passcode Login Card -->
+    <!-- Cryptographic Username/Password Login Card -->
     <div id="login-section" class="admin-login-container">
       <div class="admin-login-header">
         <h2>Staff Portal</h2>
-        <p>Choose your role and enter passcode to sign in</p>
+        <p>Enter your credentials to manage shop databases</p>
       </div>
 
-      <!-- Tab selectors -->
-      <div class="role-tabs">
-        <button id="tab-admin" class="role-tab-btn active" onclick="setRole('admin')">Admin</button>
-        <button id="tab-super" class="role-tab-btn" onclick="setRole('super')">Super Admin</button>
-      </div>
+      <form onsubmit="handleLoginSubmit(event)">
+        <div class="form-group" style="text-align: left;">
+          <label for="username">Username</label>
+          <input type="text" id="username" class="form-control" placeholder="Enter username" required autocomplete="username">
+        </div>
+        
+        <div class="form-group" style="text-align: left; margin-bottom: 2rem;">
+          <label for="password">Password</label>
+          <input type="password" id="password" class="form-control" placeholder="Enter password" required autocomplete="current-password">
+        </div>
 
-      <div class="pin-input-group">
-        <input type="password" id="passcode" class="pin-display" placeholder="••••" maxlength="4" autocomplete="off" oninput="validatePinOnInput()">
-      </div>
+        <button type="submit" class="admin-login-btn">Secure Sign In</button>
+      </form>
 
-      <button onclick="login()" class="admin-login-btn">Sign In</button>
-
-      <p class="pin-hint">
-        Hint: Admin PIN is <strong>1234</strong>. Super Admin PIN is <strong>9999</strong>.
+      <p class="pin-hint" style="line-height: 1.6;">
+        Admin: <strong>admin</strong> / <strong>shopowner</strong><br>
+        Super Admin: <strong>superadmin</strong> / <strong>developer</strong>
       </p>
     </div>
 
@@ -85,6 +88,7 @@
           <h2>Mahadev Staff Dashboard <span id="role-badge">Admin</span></h2>
         </div>
         <div class="dashboard-nav-actions">
+          <span id="db-status-badge" style="font-size: 0.8rem; font-weight: 600; padding: 4px 10px; border-radius: 20px;">Database: Local</span>
           <button onclick="logout()" class="logout-btn">Log Out</button>
         </div>
       </div>
@@ -295,62 +299,91 @@
     let activeRole = 'admin'; // 'admin' or 'super'
     let isLoggedIn = false;
 
-    // Define Passcodes
-    const PASSCODES = {
-      admin: '1234',
-      super: '9999'
-    };
-
-    function setRole(role) {
-      activeRole = role;
-      document.getElementById('tab-admin').classList.toggle('active', role === 'admin');
-      document.getElementById('tab-super').classList.toggle('active', role === 'super');
-      document.getElementById('passcode').value = '';
-      document.getElementById('passcode').focus();
-    }
-
-    function validatePinOnInput() {
-      const pin = document.getElementById('passcode').value;
-      if (pin.length === 4) {
-        login();
+    // Secure SHA-256 hashing helper using native Web Crypto API
+    async function sha256(str) {
+      const buf = new TextEncoder().encode(str);
+      const hash = await crypto.subtle.digest('SHA-256', buf);
+      let hex = '';
+      const bytes = new Uint8Array(hash);
+      for (let i = 0; i < bytes.byteLength; i++) {
+        hex += bytes[i].toString(16).padStart(2, '0');
       }
+      return hex;
     }
 
-    function login() {
-      const enteredPin = document.getElementById('passcode').value;
-      if (enteredPin === PASSCODES[activeRole]) {
+    // Handles login submission securely
+    async function handleLoginSubmit(event) {
+      event.preventDefault();
+      
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      
+      // Hash inputs
+      const userHash = await sha256(user);
+      const passHash = await sha256(pass);
+      
+      // Pre-calculated credential hashes
+      const ADMIN_USER_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; // hash of 'admin'
+      const ADMIN_PASS_HASH = 'bacc33bc1673d6862c5eb724f23dfbfe790182accb9fbd19503af2f6a8d18813'; // hash of 'shopowner'
+
+      const SUPER_USER_HASH = '186cf774c97b60a1c106ef718d10970a6a06e06bef89553d9ae65d938a886eae'; // hash of 'superadmin'
+      const SUPER_PASS_HASH = '88fa0d759f845b47c044c2cd44e29082cf6fea665c30c146374ec7c8f3d699e3'; // hash of 'developer'
+
+      const is_admin = (userHash === ADMIN_USER_HASH && passHash === ADMIN_PASS_HASH);
+      const is_super = (userHash === SUPER_USER_HASH && passHash === SUPER_PASS_HASH);
+
+      if (is_admin || is_super) {
         isLoggedIn = true;
+        activeRole = is_super ? 'super' : 'admin';
+        
+        // Store hashes in sessionStorage for outgoing XHR API requests
+        sessionStorage.setItem('mahadev_admin_user', userHash);
+        sessionStorage.setItem('mahadev_admin_pass', passHash);
+        
+        // Switch views
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('dashboard-section').style.display = 'block';
         
-        // Update UI displays based on role
-        document.getElementById('role-badge').textContent = activeRole === 'admin' ? 'Shop Owner' : 'Super Admin / Developer';
+        // Update display text
+        document.getElementById('role-badge').textContent = is_super ? 'Super Admin' : 'Shop Owner';
         
-        // Hide/Show tabs based on role
-        document.getElementById('nav-tab-rates').style.display = activeRole === 'super' ? 'block' : 'none';
-        document.getElementById('nav-tab-dev').style.display = activeRole === 'super' ? 'block' : 'none';
+        // Database connectivity badge
+        const isOnline = ProductManager.isOnline();
+        const badge = document.getElementById('db-status-badge');
+        if (isOnline) {
+          badge.textContent = "Database: Server (MilesWeb)";
+          badge.style.backgroundColor = "var(--admin-success-bg)";
+          badge.style.color = "var(--admin-success-color)";
+        } else {
+          badge.textContent = "Database: Local (Offline Fallback)";
+          badge.style.backgroundColor = "var(--admin-warning-bg)";
+          badge.style.color = "var(--admin-warning-color)";
+        }
+
+        // Hide/Show tab buttons based on role
+        document.getElementById('nav-tab-rates').style.display = is_super ? 'block' : 'none';
+        document.getElementById('nav-tab-dev').style.display = is_super ? 'block' : 'none';
         
-        // Default to products tab
         switchDashboardTab('products');
-        
-        // Load stats and tables
         updateStats();
         renderTable();
         
-        // Initialize Daily Rates Editor inside Super Admin view if loaded
-        if (activeRole === 'super' && typeof PricingEngine !== 'undefined') {
+        if (is_super && typeof PricingEngine !== 'undefined') {
           PricingEngine.renderAdminPanel('admin-rates-container');
         }
       } else {
-        alert('Incorrect passcode. Please try again!');
-        document.getElementById('passcode').value = '';
-        document.getElementById('passcode').focus();
+        alert('Invalid username or password. Access Denied!');
+        document.getElementById('password').value = '';
+        document.getElementById('password').focus();
       }
     }
 
     function logout() {
       isLoggedIn = false;
-      document.getElementById('passcode').value = '';
+      sessionStorage.removeItem('mahadev_admin_user');
+      sessionStorage.removeItem('mahadev_admin_pass');
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
       document.getElementById('dashboard-section').style.display = 'none';
       document.getElementById('login-section').style.display = 'block';
     }
@@ -363,7 +396,7 @@
       document.getElementById('nav-tab-' + tabId).classList.add('active');
     }
 
-    // Stats calculation
+    // Stats calculations
     function updateStats() {
       const all = ProductManager.getAll();
       document.getElementById('stat-total').textContent = all.length;
@@ -371,7 +404,7 @@
       document.getElementById('stat-outofstock').textContent = all.filter(p => p.availability === 'Out of Stock').length;
     }
 
-    // Dropdown updates for adding products
+    // Subcategory changes based on main category
     function updateSubcategoriesSelect() {
       const category = document.getElementById('p-category').value;
       const subSelect = document.getElementById('p-subcategory');
@@ -386,7 +419,6 @@
       });
     }
 
-    // Manage Add Modals
     function openAddModal() {
       document.getElementById('add-form').reset();
       updateSubcategoriesSelect();
@@ -421,32 +453,36 @@
         ]
       };
 
-      ProductManager.add(p);
-      closeAddModal();
-      updateStats();
-      renderTable();
-    }
-
-    // Change Stock Status directly from table
-    function changeStockStatus(productId, selectEl) {
-      const newStatus = selectEl.value;
-      ProductManager.updateStatus(productId, newStatus);
-      
-      // Update styling
-      selectEl.className = 'status-select ' + newStatus.toLowerCase().replace(' ', '-');
-      updateStats();
-    }
-
-    // Delete item
-    function deleteItem(id) {
-      if (confirm('Are you sure you want to delete this product?')) {
-        ProductManager.deleteProduct(id);
+      const success = ProductManager.add(p);
+      if (success) {
+        closeAddModal();
         updateStats();
         renderTable();
       }
     }
 
-    // Render Manage Products Table
+    // Change stock status directly
+    function changeStockStatus(productId, selectEl) {
+      const newStatus = selectEl.value;
+      const success = ProductManager.updateStatus(productId, newStatus);
+      if (success) {
+        selectEl.className = 'status-select ' + newStatus.toLowerCase().replace(' ', '-');
+        updateStats();
+      }
+    }
+
+    // Delete product
+    function deleteItem(id) {
+      if (confirm('Are you sure you want to delete this product?')) {
+        const success = ProductManager.deleteProduct(id);
+        if (success) {
+          updateStats();
+          renderTable();
+        }
+      }
+    }
+
+    // Render Table items
     function renderTable() {
       const tbody = document.getElementById('table-body');
       const searchQuery = document.getElementById('search-box').value.toLowerCase();
@@ -487,7 +523,7 @@
       }).join('');
     }
 
-    // Super Admin Dev Tools logic
+    // Developer DB tools
     function exportJSON() {
       const all = ProductManager.getAll();
       const text = JSON.stringify(all, null, 2);
@@ -506,12 +542,14 @@
       try {
         const parsed = JSON.parse(text);
         if (Array.isArray(parsed)) {
-          localStorage.setItem('mahadev_products_db', JSON.stringify(parsed));
-          updateStats();
-          renderTable();
-          status.style.display = 'block';
-          status.className = 'admin-status success';
-          status.textContent = '✓ Database successfully loaded and updated from JSON input!';
+          const success = ProductManager.importDB(parsed);
+          if (success) {
+            updateStats();
+            renderTable();
+            status.style.display = 'block';
+            status.className = 'admin-status success';
+            status.textContent = '✓ Database successfully loaded and updated from JSON input!';
+          }
         } else {
           throw new Error('JSON is not a product list array');
         }
@@ -528,21 +566,23 @@
 
     function resetDatabase() {
       if (confirm('Are you sure you want to reset the database to defaults? All custom products and stock changes will be lost.')) {
-        ProductManager.reset();
-        updateStats();
-        renderTable();
-        
-        const status = document.getElementById('dev-status');
-        status.style.display = 'block';
-        status.className = 'admin-status info';
-        status.textContent = 'Database re-seeded with default values.';
-        setTimeout(() => { status.style.display = 'none'; }, 3000);
+        const success = ProductManager.reset();
+        if (success) {
+          updateStats();
+          renderTable();
+          
+          const status = document.getElementById('dev-status');
+          status.style.display = 'block';
+          status.className = 'admin-status info';
+          status.textContent = 'Database re-seeded with default values.';
+          setTimeout(() => { status.style.display = 'none'; }, 3000);
+        }
       }
     }
 
     // Default focus
     document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('passcode').focus();
+      document.getElementById('username').focus();
     });
   </script>
 </body>
