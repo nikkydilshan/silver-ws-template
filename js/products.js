@@ -432,6 +432,23 @@ const ProductManager = (() => {
     return product;
   }
 
+  function update(product, authHeaders = null) {
+    if (isOnline) {
+      const success = _apiWrite('update', { product: product }, authHeaders);
+      if (success) return product;
+      return null;
+    }
+    
+    // Offline local fallback
+    const idx = cachedProducts.findIndex(p => p.id === product.id);
+    if (idx !== -1) {
+      cachedProducts[idx] = product;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cachedProducts));
+      return product;
+    }
+    return null;
+  }
+
   function updateStatus(id, availability, authHeaders = null) {
     if (isOnline) {
       return _apiWrite('updateStatus', { id: id, availability: availability }, authHeaders);
@@ -550,6 +567,7 @@ const ProductManager = (() => {
   return {
     getAll,
     add,
+    update,
     updateStatus,
     deleteProduct,
     reset,

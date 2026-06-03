@@ -419,6 +419,19 @@
   border-color: #ffe0b2;
 }
 
+.edit-action-btn {
+  color: #8c8983;
+  padding: 6px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  margin-right: 8px;
+}
+
+.edit-action-btn:hover {
+  color: var(--admin-success-color);
+  background-color: var(--admin-success-bg);
+}
+
 .delete-action-btn {
   color: #8c8983;
   padding: 6px;

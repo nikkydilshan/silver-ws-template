@@ -148,6 +148,25 @@ if ($method === 'POST') {
         $new_product['id'] = $max_id + 1;
         $products[] = $new_product;
 
+    } else if ($action === 'update') {
+        $updated_product = $input['product'];
+        $id = intval($updated_product['id']);
+        
+        $found = false;
+        foreach ($products as &$p) {
+            if ($p['id'] === $id) {
+                $p = array_merge($p, $updated_product);
+                $p['id'] = $id; // Ensure ID remains correct type
+                $found = true;
+                break;
+            }
+        }
+        if (!$found) {
+            http_response_code(404);
+            echo json_encode(["error" => "Product ID $id not found for update."]);
+            exit;
+        }
+
     } else if ($action === 'updateStatus') {
         $id = intval($input['id']);
         $status = $input['availability'];

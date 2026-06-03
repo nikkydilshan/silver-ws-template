@@ -311,6 +311,7 @@
   <script>
     let activeRole = 'admin'; // 'admin' or 'super'
     let isLoggedIn = false;
+    let editingProductId = null;
 
     // Handles login submission
     function handleLoginSubmit(event) {
@@ -413,9 +414,50 @@
     }
 
     function openAddModal() {
+      editingProductId = null;
+      document.querySelector('#add-modal h3').textContent = "Add New Product";
+      document.querySelector('#add-form button[type="submit"]').textContent = "Save Item";
+      document.getElementById('p-image-file').required = true;
       document.getElementById('add-form').reset();
       resetFileUploader();
       updateSubcategoriesSelect();
+      document.getElementById('add-modal').classList.add('show');
+    }
+
+    function openEditModal(id) {
+      const p = ProductManager.getAll().find(prod => prod.id === id);
+      if (!p) {
+        alert("Product not found!");
+        return;
+      }
+      
+      editingProductId = id;
+      document.querySelector('#add-modal h3').textContent = "Edit Product";
+      document.querySelector('#add-form button[type="submit"]').textContent = "Update Item";
+      document.getElementById('p-image-file').required = false;
+      
+      // Populate fields
+      document.getElementById('p-name').value = p.name;
+      document.getElementById('p-category').value = p.category;
+      updateSubcategoriesSelect();
+      document.getElementById('p-subcategory').value = p.subcategory;
+      document.getElementById('p-metal').value = p.metalType;
+      document.getElementById('p-weight').value = p.weightGrams;
+      document.getElementById('p-wastage').value = p.wastagePercent;
+      document.getElementById('p-making').value = p.makingCharges;
+      document.getElementById('p-material').value = p.material;
+      document.getElementById('p-occasion').value = p.occasion;
+      document.getElementById('p-description').value = p.description;
+      
+      // Handle image preview
+      const preview = document.getElementById('image-preview');
+      preview.src = p.image;
+      preview.style.display = 'block';
+      const removeBtn = document.getElementById('remove-image-btn');
+      if (removeBtn) removeBtn.style.display = 'inline-block';
+      const dragAreaText = document.querySelector('#drag-area .file-upload-text');
+      if (dragAreaText) dragAreaText.textContent = "Click to change product image";
+      
       document.getElementById('add-modal').classList.add('show');
     }
 
@@ -440,43 +482,67 @@
       event.preventDefault();
       
       const fileInput = document.getElementById('p-image-file');
-      if (!fileInput.files || fileInput.files.length === 0) {
+      const hasNewFile = fileInput.files && fileInput.files.length > 0;
+      
+      if (editingProductId === null && !hasNewFile) {
         alert("Please select or drag an image file.");
         return;
       }
-      
-      const file = fileInput.files[0];
       
       // Get the submit button and show loading text
       const submitBtn = event.target.querySelector('button[type="submit"]');
       const originalText = submitBtn.textContent;
       submitBtn.disabled = true;
-      submitBtn.textContent = "Uploading image...";
+      submitBtn.textContent = (editingProductId !== null) ? "Saving changes..." : "Uploading image...";
 
       try {
-        const imagePath = await ProductManager.uploadImage(file);
+        let imagePath = "";
+        if (editingProductId !== null) {
+          const existing = ProductManager.getAll().find(prod => prod.id === editingProductId);
+          imagePath = existing ? existing.image : "";
+        }
         
+        if (hasNewFile) {
+          const file = fileInput.files[0];
+          imagePath = await ProductManager.uploadImage(file);
+        }
+        
+        const weightVal = parseFloat(document.getElementById('p-weight').value);
+        const wastageVal = parseFloat(document.getElementById('p-wastage').value);
+        const makingVal = parseInt(document.getElementById('p-making').value);
+        const materialVal = document.getElementById('p-material').value;
+
         const p = {
           name: document.getElementById('p-name').value,
           category: document.getElementById('p-category').value,
           subcategory: document.getElementById('p-subcategory').value,
           metalType: document.getElementById('p-metal').value,
-          weightGrams: parseFloat(document.getElementById('p-weight').value),
-          wastagePercent: parseFloat(document.getElementById('p-wastage').value),
-          makingCharges: parseInt(document.getElementById('p-making').value),
+          weightGrams: weightVal,
+          wastagePercent: wastageVal,
+          makingCharges: makingVal,
           image: imagePath,
-          material: document.getElementById('p-material').value,
-          availability: 'In Stock',
+          material: materialVal,
           occasion: document.getElementById('p-occasion').value,
           description: document.getElementById('p-description').value,
           specifications: [
-            `Net Weight: ${document.getElementById('p-weight').value} grams`,
-            `Purity: ${document.getElementById('p-material').value}`,
-            `Wastage: ${document.getElementById('p-wastage').value}%`
+            `Net Weight: ${weightVal} grams`,
+            `Purity: ${materialVal}`,
+            `Wastage: ${wastageVal}%`
           ]
         };
 
-        const success = ProductManager.add(p);
+        let success = false;
+        if (editingProductId !== null) {
+          p.id = editingProductId;
+          const existing = ProductManager.getAll().find(prod => prod.id === editingProductId);
+          p.availability = existing ? existing.availability : 'In Stock';
+          
+          success = ProductManager.update(p);
+        } else {
+          p.availability = 'In Stock';
+          success = ProductManager.add(p);
+        }
+
         if (success) {
           closeAddModal();
           updateStats();
@@ -544,6 +610,9 @@
               </select>
             </td>
             <td>
+              <button onclick="openEditModal(${p.id})" class="edit-action-btn" title="Edit Product">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              </button>
               <button onclick="deleteItem(${p.id})" class="delete-action-btn" title="Delete Product">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
               </button>
