@@ -757,9 +757,28 @@
       });
     }
 
+    function checkSession() {
+      const user = sessionStorage.getItem('mahadev_admin_user');
+      const pass = sessionStorage.getItem('mahadev_admin_pass');
+      if (user && pass) {
+        const is_admin = (user === 'admin' && pass === 'shopowner');
+        const is_super = (user === 'superadmin' && pass === 'developer');
+        
+        if (is_admin || is_super) {
+          document.getElementById('username').value = user;
+          document.getElementById('password').value = pass;
+          const fakeEvent = { preventDefault: () => {} };
+          handleLoginSubmit(fakeEvent);
+        }
+      }
+    }
+
     // Default focus
     document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('username').focus();
+      checkSession();
+      if (!isLoggedIn) {
+        document.getElementById('username').focus();
+      }
       initImageUpload();
 
       // Mobile Navigation Drawer
