@@ -286,6 +286,7 @@ function toggleWishlistHandler(productId, buttonElement) {
         <button id="superadmin-edit-toggle" class="superadmin-editor-btn edit-toggle">Enable Edit</button>
         <button id="superadmin-save-btn" class="superadmin-editor-btn save" disabled>Save Changes</button>
         <button id="superadmin-cancel-btn" class="superadmin-editor-btn cancel">Cancel</button>
+        <a href="admin.html" class="superadmin-editor-btn dashboard-back" style="background-color: #c5a059; color: #181715; border: 1px solid #c5a059; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Back to Dashboard</a>
       </div>
     `;
     document.body.appendChild(bar);
@@ -299,6 +300,15 @@ function toggleWishlistHandler(productId, buttonElement) {
     const editToggleBtn = document.getElementById('superadmin-edit-toggle');
     const saveBtn = document.getElementById('superadmin-save-btn');
     const cancelBtn = document.getElementById('superadmin-cancel-btn');
+    const backBtn = bar.querySelector('.dashboard-back');
+
+    backBtn.addEventListener('click', (e) => {
+      if (Object.keys(pendingChanges).length > 0) {
+        if (!confirm('You have unsaved changes. Are you sure you want to go back to the dashboard?')) {
+          e.preventDefault();
+        }
+      }
+    });
 
     editToggleBtn.addEventListener('click', () => {
       editModeActive = !editModeActive;
