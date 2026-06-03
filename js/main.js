@@ -263,3 +263,172 @@ function toggleWishlistHandler(productId, buttonElement) {
     }
   }
 }
+
+// ─── Super Admin Website Text Editor ───
+(function initSuperAdminEditor() {
+  const user = sessionStorage.getItem('mahadev_admin_user');
+  const pass = sessionStorage.getItem('mahadev_admin_pass');
+  if (user !== 'superadmin' || pass !== 'developer') {
+    return;
+  }
+
+  // Inject floating editor bar after DOM load
+  document.addEventListener('DOMContentLoaded', () => {
+    const pagePath = window.location.pathname.split('/').pop() || 'index.html';
+    if (pagePath === 'admin.html') return;
+
+    const bar = document.createElement('div');
+    bar.id = 'superadmin-editor-bar';
+    bar.className = 'superadmin-editor-bar';
+    bar.innerHTML = `
+      <div class="superadmin-editor-title">Super Admin Editor Mode: ${pagePath}</div>
+      <div class="superadmin-editor-btn-group">
+        <button id="superadmin-edit-toggle" class="superadmin-editor-btn edit-toggle">Enable Edit</button>
+        <button id="superadmin-save-btn" class="superadmin-editor-btn save" disabled>Save Changes</button>
+        <button id="superadmin-cancel-btn" class="superadmin-editor-btn cancel">Cancel</button>
+      </div>
+    `;
+    document.body.appendChild(bar);
+
+    // Prevent content from being hidden behind bar at the bottom
+    document.body.style.paddingBottom = '80px';
+
+    let editModeActive = false;
+    let pendingChanges = {};
+
+    const editToggleBtn = document.getElementById('superadmin-edit-toggle');
+    const saveBtn = document.getElementById('superadmin-save-btn');
+    const cancelBtn = document.getElementById('superadmin-cancel-btn');
+
+    editToggleBtn.addEventListener('click', () => {
+      editModeActive = !editModeActive;
+      if (editModeActive) {
+        editToggleBtn.textContent = 'Disable Edit';
+        editToggleBtn.classList.add('active');
+        enableEditing();
+      } else {
+        editToggleBtn.textContent = 'Enable Edit';
+        editToggleBtn.classList.remove('active');
+        disableEditing();
+      }
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      if (Object.keys(pendingChanges).length > 0) {
+        if (confirm('Discard all unsaved edits?')) {
+          location.reload();
+        }
+      } else {
+        location.reload();
+      }
+    });
+
+    saveBtn.addEventListener('click', async () => {
+      const changesArray = Object.keys(pendingChanges).map(selector => ({
+        selector: selector,
+        newHTML: pendingChanges[selector]
+      }));
+
+      if (changesArray.length === 0) return;
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving...';
+
+      try {
+        const response = await fetch('api/save_page.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-User': user,
+            'X-Admin-Pass': pass
+          },
+          body: JSON.stringify({
+            page: pagePath,
+            changes: changesArray
+          })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          alert(`Successfully saved ${data.updated} changes to ${pagePath}!`);
+          pendingChanges = {};
+          saveBtn.disabled = true;
+          saveBtn.textContent = 'Save Changes';
+          location.reload();
+        } else {
+          alert('Error saving changes: ' + (data.error || 'Unknown error'));
+          saveBtn.disabled = false;
+          saveBtn.textContent = 'Save Changes';
+        }
+      } catch (err) {
+        alert('Network error while saving changes: ' + err.message);
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Changes';
+      }
+    });
+
+    function getElementPath(el) {
+      let path = [];
+      while (el && el.nodeType === Node.ELEMENT_NODE) {
+        let nodeName = el.nodeName.toLowerCase();
+        let sibling = el;
+        let index = 1;
+        while (sibling = sibling.previousElementSibling) {
+          if (sibling.nodeName === el.nodeName) {
+            index++;
+          }
+        }
+        path.unshift(`${nodeName}:nth-of-type(${index})`);
+        el = el.parentNode;
+      }
+      return path.join(' > ');
+    }
+
+    function handleElementBlur(event) {
+      const el = event.target;
+      const newHTML = el.innerHTML;
+      const originalHTML = el.dataset.originalHtml;
+
+      if (newHTML !== originalHTML) {
+        const path = getElementPath(el);
+        pendingChanges[path] = newHTML;
+        saveBtn.disabled = false;
+      }
+    }
+
+    function enableEditing() {
+      const tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'a', 'li', 'button', 'td', 'th', 'label', 'figcaption'];
+      const elements = document.querySelectorAll(tags.join(','));
+
+      elements.forEach(el => {
+        // Exclude elements inside the editor controls itself
+        if (el.closest('#superadmin-editor-bar')) return;
+        
+        // Exclude dynamic database-driven components
+        if (el.closest('.product-card') || el.closest('.marquee-item') || el.closest('.wishlist-item-wrapper') || el.closest('.stat-card') || el.closest('.admin-modal') || el.closest('.rates-ticker') || el.closest('#rates-ticker')) return;
+
+        // Skip logo/svg links that don't represent clear text
+        if (el.tagName === 'A' && el.classList.contains('logo')) return;
+        if (el.querySelector('svg') && el.children.length === 1 && el.textContent.trim() === '') return;
+        if (el.classList.contains('nav-icon')) return;
+
+        if (!el.dataset.originalHtml) {
+          el.dataset.originalHtml = el.innerHTML;
+        }
+
+        el.contentEditable = 'true';
+        el.classList.add('superadmin-editable');
+        el.addEventListener('blur', handleElementBlur);
+      });
+    }
+
+    function disableEditing() {
+      const editables = document.querySelectorAll('.superadmin-editable');
+      editables.forEach(el => {
+        el.contentEditable = 'false';
+        el.classList.remove('superadmin-editable');
+        el.removeEventListener('blur', handleElementBlur);
+      });
+    }
+  });
+})();

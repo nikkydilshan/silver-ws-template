@@ -1738,3 +1738,80 @@ body.menu-open {
     height: 40px;
   }
 }
+
+/* ─── Super Admin Frontend Editor Styles ─── */
+.superadmin-editor-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(24, 23, 21, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 2px solid #c5a059;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 99999;
+  font-family: 'Outfit', sans-serif;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
+}
+.superadmin-editor-title {
+  font-family: 'Playfair Display', serif;
+  color: #c5a059;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.superadmin-editor-btn-group {
+  display: flex;
+  gap: 1rem;
+}
+.superadmin-editor-btn {
+  padding: 0.5rem 1.25rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.superadmin-editor-btn.edit-toggle {
+  background-color: transparent;
+  color: #c5a059;
+  border: 1px solid #c5a059;
+}
+.superadmin-editor-btn.edit-toggle.active {
+  background-color: #c5a059;
+  color: #181715;
+}
+.superadmin-editor-btn.save {
+  background-color: #2e7d32;
+  color: white;
+  border: 1px solid #2e7d32;
+}
+.superadmin-editor-btn.save:disabled {
+  background-color: #555;
+  color: #888;
+  border-color: #555;
+  cursor: not-allowed;
+}
+.superadmin-editor-btn.cancel {
+  background-color: transparent;
+  color: white;
+  border: 1px solid #555;
+}
+.superadmin-editable {
+  outline: 1px dashed #c5a059 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+.superadmin-editable:hover {
+  outline: 2px solid #c5a059 !important;
+  background-color: rgba(197, 160, 89, 0.08) !important;
+}
+.superadmin-editable:focus {
+  outline: 2px solid #a88443 !important;
+  background-color: rgba(197, 160, 89, 0.15) !important;
+}
